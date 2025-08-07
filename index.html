@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>积分商城</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        .user-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .user-name {
+            font-size: 18px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+        .name-edit {
+            display: none;
+        }
+        .points-display {
+            background-color: #4CAF50;
+            color: white;
+            padding: 15px;
+            border-radius: 5px;
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+        .tab-container {
+            display: flex;
+            margin-bottom: 20px;
+        }
+        .tab {
+            padding: 10px 20px;
+            background-color: #ddd;
+            cursor: pointer;
+            border-radius: 5px 5px 0 0;
+            margin-right: 5px;
+        }
+        .tab.active {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .content {
+            display: none;
+            background-color: white;
+            padding: 20px;
+            border-radius: 0 5px 5px 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .content.active {
+            display: block;
+        }
+        .product {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        .product button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        .product button:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+        }
+        .record {
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        .admin-panel {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+        }
+        .admin-btn {
+            background-color: #f44336;
+            color: white;
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        .admin-form {
+            display: none;
+            position: fixed;
+            bottom: 80px;
+            right: 20px;
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            width: 300px;
+        }
+        .admin-form input, .admin-form button {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+        }
+        .admin-form button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .hidden-admin {
+            display: none;
+        }
+        .admin-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        .logout-btn {
+            background-color: #f44336;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>积分商城</h1>
+    </div>
+    
+    <div class="user-info">
+        <div>
+            <span class="user-name" onclick="showNameEdit()" id="display-name">用户</span>
+            <div class="name-edit" id="name-edit">
+                <input type="text" id="name-input" placeholder="输入您的名称">
+                <button onclick="saveName()">保存</button>
+                <button onclick="cancelNameEdit()" style="background-color: #f44336;">取消</button>
+            </div>
+        </div>
+    </div>
+    
+    <div class="points-display">
+        当前积分: <span id="current-points">0</span>
+    </div>
+    
+    <div class="tab-container">
+        <div class="tab active" onclick="switchTab('products')">商品兑换</div>
+        <div class="tab" onclick="switchTab('records')">兑换记录</div>
+    </div>
+    
+    <div id="products" class="content active">
+        <h2>可兑换商品</h2>
+        <div id="product-list">
+            <!-- 商品列表将通过JavaScript动态生成 -->
+        </div>
+    </div>
+    
+    <div id="records" class="content">
+        <h2>兑换记录</h2>
+        <div id="record-list">
+            <!-- 记录列表将通过JavaScript动态生成 -->
+        </div>
+    </div>
+    
+    <!-- 隐藏的管理面板入口 -->
+    <div class="admin-panel">
+        <button class="admin-btn" onclick="toggleAdminForm()">⚙️</button>
+    </div>
+    
+    <!-- 管理员登录表单 -->
+    <div id="admin-form" class="admin-form">
+        <h3>管理员登录</h3>
+        <input type="password" id="admin-password" placeholder="输入管理员密码">
+        <button onclick="checkAdminPassword()">登录</button>
+    </div>
+    
+    <!-- 隐藏的管理功能 -->
+    <div id="admin-functions" class="hidden-admin">
+        <div class="admin-header">
+            <h2>管理员面板</h2>
+            <button class="logout-btn" onclick="logoutAdmin()">退出管理</button>
+        </div>
+        
+        <div class="tab-container">
+            <div class="tab active" onclick="switchAdminTab('manage-products')">管理商品</div>
+            <div class="tab" onclick="switchAdminTab('adjust-points')">调整积分</div>
+        </div>
+        
+        <div id="manage-products" class="content active">
+            <h3>管理商品</h3>
+            <div id="product-management-list"></div>
+            <h3>添加新商品</h3>
+            <input type="text" id="new-product-name" placeholder="商品名称">
+            <input type="number" id="new-product-points" placeholder="所需积分">
+            <input type="number" id="new-product-stock" placeholder="库存数量">
+            <button onclick="addNewProduct()">添加商品</button>
+        </div>
+        
+        <div id="adjust-points" class="content">
+            <h3>调整积分</h3>
+            <input type="number" id="points-adjustment" placeholder="输入积分变化量">
+            <button onclick="adjustPoints()">应用调整</button>
+            <button onclick="setPoints()">设置积分</button>
+            <input type="number" id="set-points-value" placeholder="设置积分为">
+        </div>
+    </div>
+    
+    <script>
+        // 初始化数据
+        let points = localStorage.getItem('userPoints') ? parseInt(localStorage.getItem('userPoints')) : 100;
+        let userName = localStorage.getItem('userName') || "用户";
+        let products = localStorage.getItem('products') ? JSON.parse(localStorage.getItem('products')) : [
+            { id: 1, name: "饮料", points: 20, stock: 5 },
+            { id: 2, name: "零食", points: 30, stock: 3 },
+            { id: 3, name: "文具", points: 50, stock: 2 }
+        ];
+        let records = localStorage.getItem('exchangeRecords') ? JSON.parse(localStorage.getItem('exchangeRecords')) : [];
+        const adminPassword = "admin123"; // 默认管理员密码
+        
+        // 页面加载时初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            updatePointsDisplay();
+            renderProductList();
+            renderRecordList();
+            document.getElementById('display-name').textContent = userName;
+        });
+        
+        // 显示名称编辑框
+        function showNameEdit() {
+            document.getElementById('display-name').style.display = 'none';
+            const editDiv = document.getElementById('name-edit');
+            editDiv.style.display = 'block';
+            document.getElementById('name-input').value = userName;
+        }
+        
+        // 保存名称
+        function saveName() {
+            const newName = document.getElementById('name-input').value.trim();
+            if (newName) {
+                userName = newName;
+                localStorage.setItem('userName', userName);
+                document.getElementById('display-name').textContent = userName;
+                cancelNameEdit();
+                
+                // 更新记录中的用户名
+                records.forEach(record => {
+                    if (record.userName) {
+                        record.userName = userName;
+                    }
+                });
+                localStorage.setItem('exchangeRecords', JSON.stringify(records));
+            }
+        }
+        
+        // 取消名称编辑
+        function cancelNameEdit() {
+            document.getElementById('display-name').style.display = 'inline';
+            document.getElementById('name-edit').style.display = 'none';
+        }
+        
+        // 切换标签页
+        function switchTab(tabId) {
+            document.querySelectorAll('.content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            document.getElementById(tabId).classList.add('active');
+            event.target.classList.add('active');
+        }
+        
+        // 切换管理员标签页
+        function switchAdminTab(tabId) {
+            document.querySelectorAll('#admin-functions .content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.querySelectorAll('#admin-functions .tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            document.getElementById(tabId).classList.add('active');
+            event.target.classList.add('active');
+        }
+        
+        // 更新积分显示
+        function updatePointsDisplay() {
+            document.getElementById('current-points').textContent = points;
+            localStorage.setItem('userPoints', points);
+        }
+        
+        // 渲染商品列表
+        function renderProductList() {
+            const productList = document.getElementById('product-list');
+            productList.innerHTML = '';
+            
+            products.forEach(product => {
+                const productElement = document.createElement('div');
+                productElement.className = 'product';
+                productElement.innerHTML = `
+                    <div>
+                        <strong>${product.name}</strong><br>
+                        需要积分: ${product.points} | 剩余: ${product.stock}
+                    </div>
+                    <button onclick="exchangeProduct(${product.id})" ${points < product.points || product.stock <= 0 ? 'disabled' : ''}>
+                        兑换
+                    </button>
+                `;
+                productList.appendChild(productElement);
+            });
+        }
+        
+        // 兑换商品
+        function exchangeProduct(productId) {
+            const product = products.find(p => p.id === productId);
+            
+            if (product && product.stock > 0 && points >= product.points) {
+                points -= product.points;
+                product.stock--;
+                
+                // 添加记录
+                const record = {
+                    id: Date.now(),
+                    productName: product.name,
+                    pointsUsed: product.points,
+                    date: new Date().toLocaleString(),
+                    userName: userName
+                };
+                records.unshift(record);
+                
+                // 保存数据
+                localStorage.setItem('products', JSON.stringify(products));
+                localStorage.setItem('exchangeRecords', JSON.stringify(records));
+                
+                // 更新显示
+                updatePointsDisplay();
+                renderProductList();
+                renderRecordList();
+                
+                alert(`${userName} 成功兑换 ${product.name}!`);
+            }
+        }
+        
+        // 渲染记录列表
+        function renderRecordList() {
+            const recordList = document.getElementById('record-list');
+            recordList.innerHTML = '';
+            
+            if (records.length === 0) {
+                recordList.innerHTML = '<p>暂无兑换记录</p>';
+                return;
+            }
+            
+            records.forEach(record => {
+                const recordElement = document.createElement('div');
+                recordElement.className = 'record';
+                recordElement.innerHTML = `
+                    <strong>${record.productName}</strong><br>
+                    用户: ${record.userName || '未知用户'}<br>
+                    消耗积分: ${record.pointsUsed}<br>
+                    兑换时间: ${record.date}
+                `;
+                recordList.appendChild(recordElement);
+            });
+        }
+        
+        // 显示/隐藏管理员表单
+        function toggleAdminForm() {
+            const form = document.getElementById('admin-form');
+            form.style.display = form.style.display === 'block' ? 'none' : 'block';
+        }
+        
+        // 检查管理员密码
+        function checkAdminPassword() {
+            const password = document.getElementById('admin-password').value;
+            if (password === adminPassword) {
+                document.getElementById('admin-functions').classList.remove('hidden-admin');
+                document.getElementById('admin-form').style.display = 'none';
+                document.getElementById('admin-password').value = '';
+                renderProductManagementList();
+            } else {
+                alert('密码错误!');
+            }
+        }
+        
+        // 退出管理员模式
+        function logoutAdmin() {
+            document.getElementById('admin-functions').classList.add('hidden-admin');
+            document.getElementById('admin-form').style.display = 'none';
+        }
+        
+        // 渲染商品管理列表
+        function renderProductManagementList() {
+            const list = document.getElementById('product-management-list');
+            list.innerHTML = '';
+            
+            products.forEach(product => {
+                const item = document.createElement('div');
+                item.className = 'product';
+                item.innerHTML = `
+                    <div>
+                        <input type="text" id="edit-name-${product.id}" value="${product.name}"><br>
+                        积分: <input type="number" id="edit-points-${product.id}" value="${product.points}"><br>
+                        库存: <input type="number" id="edit-stock-${product.id}" value="${product.stock}">
+                    </div>
+                    <div>
+                        <button onclick="updateProduct(${product.id})">更新</button>
+                        <button onclick="deleteProduct(${product.id})" style="background-color: #f44336;">删除</button>
+                    </div>
+                `;
+                list.appendChild(item);
+            });
+        }
+        
+        // 更新商品信息
+        function updateProduct(id) {
+            const product = products.find(p => p.id === id);
+            if (product) {
+                product.name = document.getElementById(`edit-name-${id}`).value;
+                product.points = parseInt(document.getElementById(`edit-points-${id}`).value);
+                product.stock = parseInt(document.getElementById(`edit-stock-${id}`).value);
+                
+                localStorage.setItem('products', JSON.stringify(products));
+                renderProductList();
+                renderProductManagementList();
+            }
+        }
+        
+        // 删除商品
+        function deleteProduct(id) {
+            if (confirm('确定要删除这个商品吗?')) {
+                products = products.filter(p => p.id !== id);
+                localStorage.setItem('products', JSON.stringify(products));
+                renderProductList();
+                renderProductManagementList();
+            }
+        }
+        
+        // 添加新商品
+        function addNewProduct() {
+            const name = document.getElementById('new-product-name').value;
+            const points = parseInt(document.getElementById('new-product-points').value);
+            const stock = parseInt(document.getElementById('new-product-stock').value);
+            
+            if (name && !isNaN(points) && !isNaN(stock)) {
+                const newId = products.length > 0 ? Math.max(...products.map(p => p.id)) + 1 : 1;
+                products.push({
+                    id: newId,
+                    name: name,
+                    points: points,
+                    stock: stock
+                });
+                
+                localStorage.setItem('products', JSON.stringify(products));
+                
+                document.getElementById('new-product-name').value = '';
+                document.getElementById('new-product-points').value = '';
+                document.getElementById('new-product-stock').value = '';
+                
+                renderProductList();
+                renderProductManagementList();
+            } else {
+                alert('请填写完整的商品信息!');
+            }
+        }
+        
+        // 调整积分
+        function adjustPoints() {
+            const adjustment = parseInt(document.getElementById('points-adjustment').value);
+            if (!isNaN(adjustment)) {
+                points += adjustment;
+                updatePointsDisplay();
+                document.getElementById('points-adjustment').value = '';
+            }
+        }
+        
+        // 设置积分
+        function setPoints() {
+            const newPoints = parseInt(document.getElementById('set-points-value').value);
+            if (!isNaN(newPoints)) {
+                points = newPoints;
+                updatePointsDisplay();
+                document.getElementById('set-points-value').value = '';
+            }
+        }
+    </script>
+</body>
+</html>
