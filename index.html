@@ -38,10 +38,28 @@
             text-align: center;
             margin-bottom: 20px;
             font-size: 24px;
+            position: relative;
+        }
+        .check-in-btn {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background-color: #FFC107;
+            color: black;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        .check-in-btn:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
         }
         .tab-container {
             display: flex;
             margin-bottom: 20px;
+            overflow-x: auto;
         }
         .tab {
             padding: 10px 20px;
@@ -49,6 +67,7 @@
             cursor: pointer;
             border-radius: 5px 5px 0 0;
             margin-right: 5px;
+            white-space: nowrap;
         }
         .tab.active {
             background-color: #4CAF50;
@@ -143,6 +162,85 @@
             border-radius: 3px;
             cursor: pointer;
         }
+        .check-in-history {
+            margin-top: 20px;
+        }
+        .check-in-day {
+            display: inline-block;
+            width: 30px;
+            height: 30px;
+            line-height: 30px;
+            text-align: center;
+            margin: 2px;
+            border-radius: 50%;
+            background-color: #ddd;
+        }
+        .check-in-day.checked {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .check-in-day.today {
+            border: 2px solid #FFC107;
+        }
+        .inventory-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        .coupon {
+            background-color: #FFEB3B;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 5px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .coupon-code {
+            font-weight: bold;
+            font-family: monospace;
+        }
+        .discount-tag {
+            background-color: #f44336;
+            color: white;
+            padding: 2px 5px;
+            border-radius: 3px;
+            font-size: 12px;
+            margin-left: 5px;
+        }
+        .first-time-discount {
+            background-color: #4CAF50;
+            color: white;
+            padding: 5px;
+            border-radius: 3px;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+        .redeem-coupon-form {
+            background-color: #e3f2fd;
+            padding: 15px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+        .redeem-coupon-form input {
+            padding: 8px;
+            margin-right: 5px;
+            width: 60%;
+        }
+        .redeem-coupon-form button {
+            padding: 8px 15px;
+            background-color: #2196F3;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        .active-coupon {
+            background-color: #4CAF50;
+            color: white;
+        }
     </style>
 </head>
 <body>
@@ -163,17 +261,34 @@
     
     <div class="points-display">
         当前积分: <span id="current-points">0</span>
+        <button class="check-in-btn" id="check-in-btn" onclick="checkIn()">每日签到</button>
     </div>
     
     <div class="tab-container">
         <div class="tab active" onclick="switchTab('products')">商品兑换</div>
+        <div class="tab" onclick="switchTab('inventory')">我的仓库</div>
         <div class="tab" onclick="switchTab('records')">兑换记录</div>
+        <div class="tab" onclick="switchTab('check-in')">签到记录</div>
+        <div class="tab" onclick="switchTab('coupons')">我的优惠券</div>
     </div>
     
     <div id="products" class="content active">
+        <div id="first-time-discount" class="first-time-discount" style="display: none;">
+            首次兑换可享9折优惠！
+        </div>
+        <div id="active-coupon-info" class="first-time-discount" style="display: none; background-color: #2196F3;">
+            当前使用优惠券: <span id="active-coupon-name"></span> (<span id="active-coupon-discount"></span>%折扣)
+        </div>
         <h2>可兑换商品</h2>
         <div id="product-list">
             <!-- 商品列表将通过JavaScript动态生成 -->
+        </div>
+    </div>
+    
+    <div id="inventory" class="content">
+        <h2>我的仓库</h2>
+        <div id="inventory-list">
+            <!-- 仓库物品列表将通过JavaScript动态生成 -->
         </div>
     </div>
     
@@ -181,6 +296,33 @@
         <h2>兑换记录</h2>
         <div id="record-list">
             <!-- 记录列表将通过JavaScript动态生成 -->
+        </div>
+    </div>
+    
+    <div id="check-in" class="content">
+        <h2>签到记录</h2>
+        <div id="check-in-status">
+            <p>本月签到天数: <span id="check-in-count">0</span> 天</p>
+            <p>连续签到天数: <span id="streak-count">0</span> 天</p>
+            <p>今日签到状态: <span id="today-status">未签到</span></p>
+        </div>
+        <div class="check-in-history">
+            <h3>本月签到日历</h3>
+            <div id="check-in-calendar">
+                <!-- 签到日历将通过JavaScript动态生成 -->
+            </div>
+        </div>
+    </div>
+    
+    <div id="coupons" class="content">
+        <div class="redeem-coupon-form">
+            <h3>兑换优惠券</h3>
+            <input type="text" id="coupon-code-input" placeholder="输入优惠券代码">
+            <button onclick="redeemCoupon()">兑换</button>
+        </div>
+        <h2>我的优惠券</h2>
+        <div id="coupon-list">
+            <!-- 优惠券列表将通过JavaScript动态生成 -->
         </div>
     </div>
     
@@ -206,6 +348,8 @@
         <div class="tab-container">
             <div class="tab active" onclick="switchAdminTab('manage-products')">管理商品</div>
             <div class="tab" onclick="switchAdminTab('adjust-points')">调整积分</div>
+            <div class="tab" onclick="switchAdminTab('check-in-settings')">签到设置</div>
+            <div class="tab" onclick="switchAdminTab('manage-coupons')">管理优惠券</div>
         </div>
         
         <div id="manage-products" class="content active">
@@ -225,6 +369,25 @@
             <button onclick="setPoints()">设置积分</button>
             <input type="number" id="set-points-value" placeholder="设置积分为">
         </div>
+        
+        <div id="check-in-settings" class="content">
+            <h3>签到设置</h3>
+            <label for="daily-points">每日签到奖励积分:</label>
+            <input type="number" id="daily-points" value="10">
+            <label for="streak-bonus">连续签到额外奖励:</label>
+            <input type="number" id="streak-bonus" value="5">
+            <button onclick="saveCheckInSettings()">保存设置</button>
+        </div>
+        
+        <div id="manage-coupons" class="content">
+            <h3>管理优惠券</h3>
+            <div id="coupon-management-list"></div>
+            <h3>添加新优惠券</h3>
+            <input type="text" id="new-coupon-name" placeholder="优惠券名称">
+            <input type="text" id="new-coupon-code" placeholder="优惠券代码">
+            <input type="number" id="new-coupon-discount" placeholder="折扣比例(0-100)" min="0" max="100">
+            <button onclick="addNewCoupon()">添加优惠券</button>
+        </div>
     </div>
     
     <script>
@@ -232,20 +395,167 @@
         let points = localStorage.getItem('userPoints') ? parseInt(localStorage.getItem('userPoints')) : 100;
         let userName = localStorage.getItem('userName') || "用户";
         let products = localStorage.getItem('products') ? JSON.parse(localStorage.getItem('products')) : [
-            { id: 1, name: "饮料", points: 20, stock: 5 },
-            { id: 2, name: "零食", points: 30, stock: 3 },
-            { id: 3, name: "文具", points: 50, stock: 2 }
+            { id: 1, name: "随机饮料", points: 188, stock: 5 },
+            { id: 2, name: "随机零食", points: 188, stock: 3 },
+            { id: 3, name: "随机文具", points: 188, stock: 2 }
         ];
         let records = localStorage.getItem('exchangeRecords') ? JSON.parse(localStorage.getItem('exchangeRecords')) : [];
-        const adminPassword = "admin123"; // 默认管理员密码
+        let inventory = localStorage.getItem('userInventory') ? JSON.parse(localStorage.getItem('userInventory')) : [];
+        let coupons = localStorage.getItem('userCoupons') ? JSON.parse(localStorage.getItem('userCoupons')) : [];
+        let couponTemplates = localStorage.getItem('couponTemplates') ? JSON.parse(localStorage.getItem('couponTemplates')) : [
+            { id: 1, name: "新人优惠券", code: "WELCOME10", discount: 10 },
+            { id: 2, name: "新人八折券", code: "WELCOME20", discount: 20 }
+        ];
+        const adminPassword = "admin2659465707"; // 默认管理员密码
+        
+        // 签到相关数据
+        let checkInData = localStorage.getItem('checkInData') ? JSON.parse(localStorage.getItem('checkInData')) : {
+            lastCheckInDate: null,
+            streak: 0,
+            checkInDays: [],
+            dailyPoints: 10,
+            streakBonus: 5
+        };
+        
+        // 首次兑换标志
+        let firstExchange = localStorage.getItem('firstExchange') === null ? true : localStorage.getItem('firstExchange') === 'true';
+        
+        // 当前使用的优惠券
+        let activeCoupon = localStorage.getItem('activeCoupon') ? JSON.parse(localStorage.getItem('activeCoupon')) : null;
         
         // 页面加载时初始化
         document.addEventListener('DOMContentLoaded', function() {
             updatePointsDisplay();
             renderProductList();
             renderRecordList();
+            renderInventoryList();
+            renderCouponList();
             document.getElementById('display-name').textContent = userName;
+            updateCheckInStatus();
+            renderCheckInCalendar();
+            
+            // 检查今天是否已经签到
+            const today = new Date().toDateString();
+            if (checkInData.lastCheckInDate === today) {
+                document.getElementById('check-in-btn').disabled = true;
+                document.getElementById('today-status').textContent = "已签到";
+            }
+            
+            // 显示首次兑换优惠提示
+            if (firstExchange) {
+                document.getElementById('first-time-discount').style.display = 'block';
+            }
+            
+            // 显示当前使用的优惠券
+            if (activeCoupon) {
+                document.getElementById('active-coupon-info').style.display = 'block';
+                document.getElementById('active-coupon-name').textContent = activeCoupon.name;
+                document.getElementById('active-coupon-discount').textContent = activeCoupon.discount;
+            }
+            
+            // 随机发放优惠券给新用户
+            if (coupons.length === 0 && Math.random() > 0.5) {
+                const randomCoupon = couponTemplates[Math.floor(Math.random() * couponTemplates.length)];
+                coupons.push({
+                    ...randomCoupon,
+                    id: Date.now(),
+                    used: false
+                });
+                localStorage.setItem('userCoupons', JSON.stringify(coupons));
+                renderCouponList();
+                alert(`恭喜获得优惠券: ${randomCoupon.name} (代码: ${randomCoupon.code})`);
+            }
         });
+        
+        // 兑换优惠券
+        function redeemCoupon() {
+            const code = document.getElementById('coupon-code-input').value.trim().toUpperCase();
+            if (!code) {
+                alert('请输入优惠券代码!');
+                return;
+            }
+            
+            // 检查是否已经拥有该优惠券
+            if (coupons.some(c => c.code === code && !c.used)) {
+                alert('您已经拥有这张未使用的优惠券!');
+                return;
+            }
+            
+            // 检查优惠券模板是否存在
+            const couponTemplate = couponTemplates.find(c => c.code === code);
+            if (!couponTemplate) {
+                alert('无效的优惠券代码!');
+                return;
+            }
+            
+            // 添加优惠券到用户账户
+            coupons.push({
+                ...couponTemplate,
+                id: Date.now(),
+                used: false
+            });
+            
+            localStorage.setItem('userCoupons', JSON.stringify(coupons));
+            document.getElementById('coupon-code-input').value = '';
+            renderCouponList();
+            
+            alert(`成功兑换优惠券: ${couponTemplate.name} (${couponTemplate.discount}%折扣)`);
+        }
+        
+        // 使用优惠券
+        function useCoupon(code) {
+            const coupon = coupons.find(c => c.code === code && !c.used);
+            if (!coupon) {
+                alert('优惠券无效或已使用!');
+                return;
+            }
+            
+            // 设置当前使用的优惠券
+            activeCoupon = {
+                code: coupon.code,
+                name: coupon.name,
+                discount: coupon.discount
+            };
+            localStorage.setItem('activeCoupon', JSON.stringify(activeCoupon));
+            
+            // 标记优惠券为已使用
+            coupon.used = true;
+            localStorage.setItem('userCoupons', JSON.stringify(coupons));
+            
+            // 更新显示
+            document.getElementById('active-coupon-info').style.display = 'block';
+            document.getElementById('active-coupon-name').textContent = activeCoupon.name;
+            document.getElementById('active-coupon-discount').textContent = activeCoupon.discount;
+            renderCouponList();
+            renderProductList();
+            
+            alert(`优惠券 ${coupon.name} (${coupon.code}) 已使用! 所有商品将享受${coupon.discount}%折扣`);
+        }
+        
+        // 清除当前使用的优惠券
+        function clearActiveCoupon() {
+            activeCoupon = null;
+            localStorage.removeItem('activeCoupon');
+            document.getElementById('active-coupon-info').style.display = 'none';
+            renderProductList();
+        }
+        
+        // 计算商品最终价格
+        function calculateFinalPrice(basePrice) {
+            let finalPrice = basePrice;
+            
+            // 应用首次兑换折扣
+            if (firstExchange) {
+                finalPrice = Math.floor(finalPrice * 0.9);
+            }
+            
+            // 应用优惠券折扣
+            if (activeCoupon) {
+                finalPrice = Math.floor(finalPrice * (1 - activeCoupon.discount / 100));
+            }
+            
+            return finalPrice;
+        }
         
         // 显示名称编辑框
         function showNameEdit() {
@@ -304,6 +614,11 @@
             
             document.getElementById(tabId).classList.add('active');
             event.target.classList.add('active');
+            
+            // 如果是优惠券管理标签，渲染优惠券管理列表
+            if (tabId === 'manage-coupons') {
+                renderCouponManagementList();
+            }
         }
         
         // 更新积分显示
@@ -320,12 +635,31 @@
             products.forEach(product => {
                 const productElement = document.createElement('div');
                 productElement.className = 'product';
+                
+                // 计算最终价格
+                const finalPrice = calculateFinalPrice(product.points);
+                
+                // 构建折扣信息
+                let discountInfo = '';
+                if (firstExchange || activeCoupon) {
+                    discountInfo = `<span class="discount-tag">`;
+                    if (firstExchange && activeCoupon) {
+                        discountInfo += `首单9折+${activeCoupon.discount}%`;
+                    } else if (firstExchange) {
+                        discountInfo += `首单9折`;
+                    } else if (activeCoupon) {
+                        discountInfo += `${activeCoupon.discount}%`;
+                    }
+                    discountInfo += `</span>`;
+                }
+                
                 productElement.innerHTML = `
                     <div>
-                        <strong>${product.name}</strong><br>
-                        需要积分: ${product.points} | 剩余: ${product.stock}
+                        <strong>${product.name}</strong>${discountInfo}<br>
+                        需要积分: <span style="text-decoration: ${finalPrice < product.points ? 'line-through' : 'none'}">${product.points}</span>
+                        ${finalPrice < product.points ? `→ ${finalPrice}` : ''} | 剩余: ${product.stock}
                     </div>
-                    <button onclick="exchangeProduct(${product.id})" ${points < product.points || product.stock <= 0 ? 'disabled' : ''}>
+                    <button onclick="exchangeProduct(${product.id})" ${points < finalPrice || product.stock <= 0 ? 'disabled' : ''}>
                         兑换
                     </button>
                 `;
@@ -337,31 +671,68 @@
         function exchangeProduct(productId) {
             const product = products.find(p => p.id === productId);
             
-            if (product && product.stock > 0 && points >= product.points) {
-                points -= product.points;
-                product.stock--;
-                
-                // 添加记录
-                const record = {
-                    id: Date.now(),
-                    productName: product.name,
-                    pointsUsed: product.points,
-                    date: new Date().toLocaleString(),
-                    userName: userName
-                };
-                records.unshift(record);
-                
-                // 保存数据
-                localStorage.setItem('products', JSON.stringify(products));
-                localStorage.setItem('exchangeRecords', JSON.stringify(records));
-                
-                // 更新显示
-                updatePointsDisplay();
-                renderProductList();
-                renderRecordList();
-                
-                alert(`${userName} 成功兑换 ${product.name}!`);
+            if (!product || product.stock <= 0) {
+                alert('该商品已售罄!');
+                return;
             }
+            
+            // 计算最终价格
+            const finalPrice = calculateFinalPrice(product.points);
+            
+            if (points < finalPrice) {
+                alert('积分不足!');
+                return;
+            }
+            
+            points -= finalPrice;
+            product.stock--;
+            
+            // 添加兑换记录
+            const record = {
+                id: Date.now(),
+                productName: product.name,
+                pointsUsed: finalPrice,
+                originalPoints: product.points,
+                date: new Date().toLocaleString(),
+                userName: userName,
+                discount: firstExchange ? 10 : 0,
+                couponUsed: activeCoupon ? activeCoupon.code : null
+            };
+            records.unshift(record);
+            
+            // 添加到仓库
+            inventory.push({
+                id: Date.now(),
+                productId: product.id,
+                productName: product.name,
+                acquireDate: new Date().toLocaleString(),
+                used: false
+            });
+            
+            // 如果是首次兑换，取消首次兑换标志
+            if (firstExchange) {
+                firstExchange = false;
+                localStorage.setItem('firstExchange', 'false');
+                document.getElementById('first-time-discount').style.display = 'none';
+            }
+            
+            // 如果使用了优惠券，清除当前使用的优惠券
+            if (activeCoupon) {
+                clearActiveCoupon();
+            }
+            
+            // 保存数据
+            localStorage.setItem('products', JSON.stringify(products));
+            localStorage.setItem('exchangeRecords', JSON.stringify(records));
+            localStorage.setItem('userInventory', JSON.stringify(inventory));
+            
+            // 更新显示
+            updatePointsDisplay();
+            renderProductList();
+            renderRecordList();
+            renderInventoryList();
+            
+            alert(`${userName} 成功兑换 ${product.name}! 消耗积分: ${finalPrice}${finalPrice < product.points ? ` (原价: ${product.points}, 已优惠${product.points - finalPrice}积分)` : ''}`);
         }
         
         // 渲染记录列表
@@ -378,13 +749,246 @@
                 const recordElement = document.createElement('div');
                 recordElement.className = 'record';
                 recordElement.innerHTML = `
-                    <strong>${record.productName}</strong><br>
+                    <strong>${record.productName}</strong>
+                    ${record.discount > 0 || record.couponUsed ? `
+                        <span class="discount-tag">
+                            ${record.discount > 0 ? `首单${record.discount}折` : ''}
+                            ${record.discount > 0 && record.couponUsed ? '+' : ''}
+                            ${record.couponUsed ? `优惠券` : ''}
+                        </span>
+                    ` : ''}<br>
                     用户: ${record.userName || '未知用户'}<br>
-                    消耗积分: ${record.pointsUsed}<br>
+                    消耗积分: ${record.pointsUsed}${record.pointsUsed < record.originalPoints ? ` (原价: ${record.originalPoints})` : ''}<br>
                     兑换时间: ${record.date}
                 `;
                 recordList.appendChild(recordElement);
             });
+        }
+        
+        // 渲染仓库列表
+        function renderInventoryList() {
+            const inventoryList = document.getElementById('inventory-list');
+            inventoryList.innerHTML = '';
+            
+            if (inventory.length === 0) {
+                inventoryList.innerHTML = '<p>仓库空空如也</p>';
+                return;
+            }
+            
+            inventory.forEach(item => {
+                const itemElement = document.createElement('div');
+                itemElement.className = 'inventory-item';
+                itemElement.innerHTML = `
+                    <div>
+                        <strong>${item.productName}</strong><br>
+                        获取时间: ${item.acquireDate}
+                    </div>
+                    <div>
+                        <span style="color: ${item.used ? '#4CAF50' : '#f44336'}">${item.used ? '已使用' : '未使用'}</span>
+                    </div>
+                `;
+                inventoryList.appendChild(itemElement);
+            });
+        }
+        
+        // 渲染优惠券列表
+        function renderCouponList() {
+            const couponList = document.getElementById('coupon-list');
+            couponList.innerHTML = '';
+            
+            if (coupons.length === 0) {
+                couponList.innerHTML = '<p>暂无优惠券</p>';
+                return;
+            }
+            
+            coupons.forEach(coupon => {
+                const couponElement = document.createElement('div');
+                couponElement.className = `coupon ${coupon.used ? 'active-coupon' : ''}`;
+                couponElement.innerHTML = `
+                    <div>
+                        <strong>${coupon.name}</strong><br>
+                        代码: <span class="coupon-code">${coupon.code}</span><br>
+                        折扣: ${coupon.discount}%
+                    </div>
+                    <div>
+                        ${coupon.used ? 
+                            '<span>已使用</span>' : 
+                            `<button onclick="useCoupon('${coupon.code}')">使用</button>`
+                        }
+                    </div>
+                `;
+                couponList.appendChild(couponElement);
+            });
+        }
+        
+        // 渲染优惠券管理列表
+        function renderCouponManagementList() {
+            const list = document.getElementById('coupon-management-list');
+            list.innerHTML = '';
+            
+            couponTemplates.forEach(coupon => {
+                const item = document.createElement('div');
+                item.className = 'coupon';
+                item.innerHTML = `
+                    <div>
+                        <strong>${coupon.name}</strong><br>
+                        代码: ${coupon.code}<br>
+                        折扣: ${coupon.discount}%
+                    </div>
+                    <div>
+                        <button onclick="deleteCoupon(${coupon.id})" style="background-color: #f44336;">删除</button>
+                    </div>
+                `;
+                list.appendChild(item);
+            });
+        }
+        
+        // 添加新优惠券
+        function addNewCoupon() {
+            const name = document.getElementById('new-coupon-name').value.trim();
+            const code = document.getElementById('new-coupon-code').value.trim().toUpperCase();
+            const discount = parseInt(document.getElementById('new-coupon-discount').value);
+            
+            if (!name || !code || isNaN(discount) || discount <= 0 || discount > 100) {
+                alert('请填写完整的优惠券信息，折扣必须在1-100之间!');
+                return;
+            }
+            
+            // 检查代码是否已存在
+            if (couponTemplates.some(c => c.code === code)) {
+                alert('该优惠券代码已存在!');
+                return;
+            }
+            
+            const newId = couponTemplates.length > 0 ? Math.max(...couponTemplates.map(c => c.id)) + 1 : 1;
+            couponTemplates.push({
+                id: newId,
+                name: name,
+                code: code,
+                discount: discount
+            });
+            
+            localStorage.setItem('couponTemplates', JSON.stringify(couponTemplates));
+            
+            document.getElementById('new-coupon-name').value = '';
+            document.getElementById('new-coupon-code').value = '';
+            document.getElementById('new-coupon-discount').value = '';
+            
+            renderCouponManagementList();
+        }
+        
+        // 删除优惠券
+        function deleteCoupon(id) {
+            if (confirm('确定要删除这个优惠券吗?')) {
+                couponTemplates = couponTemplates.filter(c => c.id !== id);
+                localStorage.setItem('couponTemplates', JSON.stringify(couponTemplates));
+                renderCouponManagementList();
+            }
+        }
+        
+        // 每日签到功能
+        function checkIn() {
+            const today = new Date();
+            const todayStr = today.toDateString();
+            const yesterday = new Date(today);
+            yesterday.setDate(yesterday.getDate() - 1);
+            const yesterdayStr = yesterday.toDateString();
+            
+            // 检查今天是否已经签到
+            if (checkInData.lastCheckInDate === todayStr) {
+                alert('今天已经签到过了!');
+                return;
+            }
+            
+            // 计算连续签到
+            if (checkInData.lastCheckInDate === yesterdayStr) {
+                checkInData.streak++;
+            } else {
+                checkInData.streak = 1;
+            }
+            
+            // 记录签到
+            checkInData.lastCheckInDate = todayStr;
+            const dayOfMonth = today.getDate();
+            if (!checkInData.checkInDays.includes(dayOfMonth)) {
+                checkInData.checkInDays.push(dayOfMonth);
+            }
+            
+            // 计算奖励积分
+            let rewardPoints = checkInData.dailyPoints;
+            if (checkInData.streak > 1) {
+                rewardPoints += checkInData.streakBonus * (checkInData.streak - 1);
+            }
+            
+            // 增加积分
+            points += rewardPoints;
+            
+            // 保存数据
+            localStorage.setItem('checkInData', JSON.stringify(checkInData));
+            localStorage.setItem('userPoints', points);
+            
+            // 更新显示
+            updatePointsDisplay();
+            updateCheckInStatus();
+            renderCheckInCalendar();
+            document.getElementById('check-in-btn').disabled = true;
+            document.getElementById('today-status').textContent = "已签到";
+            
+            alert(`签到成功! 获得 ${rewardPoints} 积分 (基础: ${checkInData.dailyPoints}, 连续签到奖励: ${rewardPoints - checkInData.dailyPoints})`);
+        }
+        
+        // 更新签到状态显示
+        function updateCheckInStatus() {
+            document.getElementById('check-in-count').textContent = checkInData.checkInDays.length;
+            document.getElementById('streak-count').textContent = checkInData.streak;
+            
+            const today = new Date().toDateString();
+            if (checkInData.lastCheckInDate === today) {
+                document.getElementById('today-status').textContent = "已签到";
+            } else {
+                document.getElementById('today-status').textContent = "未签到";
+            }
+        }
+        
+        // 渲染签到日历
+        function renderCheckInCalendar() {
+            const calendar = document.getElementById('check-in-calendar');
+            calendar.innerHTML = '';
+            
+            const today = new Date();
+            const daysInMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate();
+            const currentDay = today.getDate();
+            
+            for (let i = 1; i <= daysInMonth; i++) {
+                const dayElement = document.createElement('div');
+                dayElement.className = 'check-in-day';
+                dayElement.textContent = i;
+                
+                if (checkInData.checkInDays.includes(i)) {
+                    dayElement.classList.add('checked');
+                }
+                
+                if (i === currentDay) {
+                    dayElement.classList.add('today');
+                }
+                
+                calendar.appendChild(dayElement);
+            }
+        }
+        
+        // 保存签到设置
+        function saveCheckInSettings() {
+            const dailyPoints = parseInt(document.getElementById('daily-points').value);
+            const streakBonus = parseInt(document.getElementById('streak-bonus').value);
+            
+            if (!isNaN(dailyPoints) && !isNaN(streakBonus)) {
+                checkInData.dailyPoints = dailyPoints;
+                checkInData.streakBonus = streakBonus;
+                localStorage.setItem('checkInData', JSON.stringify(checkInData));
+                alert('签到设置已保存!');
+            } else {
+                alert('请输入有效的数值!');
+            }
         }
         
         // 显示/隐藏管理员表单
@@ -401,6 +1005,10 @@
                 document.getElementById('admin-form').style.display = 'none';
                 document.getElementById('admin-password').value = '';
                 renderProductManagementList();
+                
+                // 加载签到设置
+                document.getElementById('daily-points').value = checkInData.dailyPoints;
+                document.getElementById('streak-bonus').value = checkInData.streakBonus;
             } else {
                 alert('密码错误!');
             }
