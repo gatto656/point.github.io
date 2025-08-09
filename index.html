@@ -5,34 +5,165 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>积分商城</title>
     <style>
+        :root {
+            --primary-color: #4CAF50;
+            --primary-text: white;
+            --secondary-color: #f5f5f5;
+            --background-color: white;
+            --text-color: #333;
+            --border-color: #ddd;
+            --button-hover: #45a049;
+            --header-bg: #4CAF50;
+            --header-text: white;
+            --tab-bg: #ddd;
+            --tab-active: #4CAF50;
+            --product-bg: white;
+            --record-bg: #f9f9f9;
+            --points-display: #4CAF50;
+        }
+
+        /* 主题颜色定义 */
+        .theme-default {
+            --primary-color: #4CAF50;
+            --primary-text: white;
+            --secondary-color: #f5f5f5;
+            --background-color: white;
+            --text-color: #333;
+            --border-color: #ddd;
+            --button-hover: #45a049;
+            --header-bg: #4CAF50;
+            --header-text: white;
+            --tab-bg: #ddd;
+            --tab-active: #4CAF50;
+            --product-bg: white;
+            --record-bg: #f9f9f9;
+            --points-display: #4CAF50;
+        }
+
+        .theme-gray {
+            --primary-color: #9E9E9E;
+            --primary-text: white;
+            --secondary-color: #f5f5f5;
+            --background-color: #f9f9f9;
+            --text-color: #424242;
+            --border-color: #BDBDBD;
+            --button-hover: #757575;
+            --header-bg: #616161;
+            --header-text: white;
+            --tab-bg: #E0E0E0;
+            --tab-active: #757575;
+            --product-bg: white;
+            --record-bg: #EEEEEE;
+            --points-display: #757575;
+        }
+
+        .theme-pink {
+            --primary-color: #E91E63;
+            --primary-text: white;
+            --secondary-color: #FCE4EC;
+            --background-color: white;
+            --text-color: #880E4F;
+            --border-color: #F8BBD0;
+            --button-hover: #C2185B;
+            --header-bg: #C2185B;
+            --header-text: white;
+            --tab-bg: #F8BBD0;
+            --tab-active: #E91E63;
+            --product-bg: white;
+            --record-bg: #FCE4EC;
+            --points-display: #E91E63;
+        }
+
+        .theme-yellow {
+            --primary-color: #FFC107;
+            --primary-text: black;
+            --secondary-color: #FFF9C4;
+            --background-color: white;
+            --text-color: #5D4037;
+            --border-color: #FFE082;
+            --button-hover: #FFA000;
+            --header-bg: #FFA000;
+            --header-text: white;
+            --tab-bg: #FFE082;
+            --tab-active: #FFC107;
+            --product-bg: white;
+            --record-bg: #FFF9C4;
+            --points-display: #FFA000;
+        }
+
+        .theme-blue {
+            --primary-color: #2196F3;
+            --primary-text: white;
+            --secondary-color: #E3F2FD;
+            --background-color: white;
+            --text-color: #0D47A1;
+            --border-color: #90CAF9;
+            --button-hover: #1976D2;
+            --header-bg: #1976D2;
+            --header-text: white;
+            --tab-bg: #BBDEFB;
+            --tab-active: #2196F3;
+            --product-bg: white;
+            --record-bg: #E3F2FD;
+            --points-display: #1976D2;
+        }
+
+        .theme-dark {
+            --primary-color: #424242;
+            --primary-text: white;
+            --secondary-color: #212121;
+            --background-color: #303030;
+            --text-color: #E0E0E0;
+            --border-color: #616161;
+            --button-hover: #212121;
+            --header-bg: #212121;
+            --header-text: white;
+            --tab-bg: #616161;
+            --tab-active: #424242;
+            --product-bg: #424242;
+            --record-bg: #212121;
+            --points-display: #212121;
+        }
+
         body {
             font-family: 'Arial', sans-serif;
             max-width: 800px;
             margin: 0 auto;
             padding: 20px;
-            background-color: #f5f5f5;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            transition: all 0.3s ease;
         }
+
         .header {
             text-align: center;
             margin-bottom: 20px;
+            background-color: var(--header-bg);
+            color: var(--header-text);
+            padding: 15px;
+            border-radius: 5px;
         }
+
         .user-info {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 15px;
         }
+
         .user-name {
             font-size: 18px;
             font-weight: bold;
             cursor: pointer;
         }
+
         .name-edit {
             display: none;
         }
+
         .points-display {
-            background-color: #4CAF50;
-            color: white;
+            background-color: var(--points-display);
+            color: var(--primary-text);
             padding: 15px;
             border-radius: 5px;
             text-align: center;
@@ -40,6 +171,7 @@
             font-size: 24px;
             position: relative;
         }
+
         .check-in-btn {
             position: absolute;
             right: 15px;
@@ -52,65 +184,86 @@
             border-radius: 3px;
             cursor: pointer;
         }
+
         .check-in-btn:disabled {
             background-color: #cccccc;
             cursor: not-allowed;
         }
+
         .tab-container {
             display: flex;
             margin-bottom: 20px;
             overflow-x: auto;
         }
+
         .tab {
             padding: 10px 20px;
-            background-color: #ddd;
+            background-color: var(--tab-bg);
             cursor: pointer;
             border-radius: 5px 5px 0 0;
             margin-right: 5px;
             white-space: nowrap;
         }
+
         .tab.active {
-            background-color: #4CAF50;
+            background-color: var(--tab-active);
             color: white;
         }
+
         .content {
             display: none;
-            background-color: white;
+            background-color: var(--product-bg);
             padding: 20px;
             border-radius: 0 5px 5px 5px;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            border: 1px solid var(--border-color);
         }
+
         .content.active {
             display: block;
         }
+
         .product {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 10px;
-            border-bottom: 1px solid #eee;
+            border-bottom: 1px solid var(--border-color);
         }
+
         .product button {
-            background-color: #4CAF50;
-            color: white;
+            background-color: var(--primary-color);
+            color: var(--primary-text);
             border: none;
             padding: 5px 10px;
             border-radius: 3px;
             cursor: pointer;
         }
+
+        .product button:hover {
+            background-color: var(--button-hover);
+        }
+
         .product button:disabled {
             background-color: #cccccc;
             cursor: not-allowed;
         }
+
         .record {
             padding: 10px;
-            border-bottom: 1px solid #eee;
+            border-bottom: 1px solid var(--border-color);
+            background-color: var(--record-bg);
+            margin-bottom: 5px;
+            border-radius: 3px;
         }
+
         .admin-panel {
             position: fixed;
             bottom: 20px;
             right: 20px;
+            z-index: 1000;
         }
+
         .admin-btn {
             background-color: #f44336;
             color: white;
@@ -122,38 +275,32 @@
             cursor: pointer;
             box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
+
         .admin-form {
             display: none;
             position: fixed;
             bottom: 80px;
             right: 20px;
-            background-color: white;
+            background-color: var(--product-bg);
             padding: 20px;
             border-radius: 5px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.2);
             width: 300px;
+            border: 1px solid var(--border-color);
+            z-index: 1000;
         }
-        .admin-form input, .admin-form button {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 10px;
-            box-sizing: border-box;
-        }
-        .admin-form button {
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
+
         .hidden-admin {
             display: none;
         }
+
         .admin-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 15px;
         }
+
         .logout-btn {
             background-color: #f44336;
             color: white;
@@ -162,9 +309,11 @@
             border-radius: 3px;
             cursor: pointer;
         }
+
         .check-in-history {
             margin-top: 20px;
         }
+
         .check-in-day {
             display: inline-block;
             width: 30px;
@@ -173,22 +322,26 @@
             text-align: center;
             margin: 2px;
             border-radius: 50%;
-            background-color: #ddd;
+            background-color: var(--tab-bg);
         }
+
         .check-in-day.checked {
-            background-color: #4CAF50;
-            color: white;
+            background-color: var(--primary-color);
+            color: var(--primary-text);
         }
+
         .check-in-day.today {
             border: 2px solid #FFC107;
         }
+
         .inventory-item {
             display: flex;
             justify-content: space-between;
             align-items: center;
             padding: 10px;
-            border-bottom: 1px solid #eee;
+            border-bottom: 1px solid var(--border-color);
         }
+
         .coupon {
             background-color: #FFEB3B;
             padding: 10px;
@@ -198,10 +351,12 @@
             justify-content: space-between;
             align-items: center;
         }
+
         .coupon-code {
             font-weight: bold;
             font-family: monospace;
         }
+
         .discount-tag {
             background-color: #f44336;
             color: white;
@@ -210,40 +365,141 @@
             font-size: 12px;
             margin-left: 5px;
         }
+
         .first-time-discount {
-            background-color: #4CAF50;
-            color: white;
+            background-color: var(--primary-color);
+            color: var(--primary-text);
             padding: 5px;
             border-radius: 3px;
             margin-bottom: 10px;
             text-align: center;
         }
+
         .redeem-coupon-form {
-            background-color: #e3f2fd;
+            background-color: var(--secondary-color);
             padding: 15px;
             border-radius: 5px;
             margin-bottom: 15px;
         }
+
         .redeem-coupon-form input {
             padding: 8px;
             margin-right: 5px;
             width: 60%;
+            border: 1px solid var(--border-color);
+            background-color: var(--background-color);
+            color: var(--text-color);
         }
+
         .redeem-coupon-form button {
             padding: 8px 15px;
-            background-color: #2196F3;
-            color: white;
+            background-color: var(--primary-color);
+            color: var(--primary-text);
             border: none;
             border-radius: 3px;
             cursor: pointer;
         }
+
         .active-coupon {
-            background-color: #4CAF50;
+            background-color: var(--primary-color);
+            color: var(--primary-text);
+        }
+
+        .exchange-coins-btn {
+            background-color: #2196F3;
             color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+            margin-left: 10px;
+        }
+
+        /* 主题切换按钮样式 */
+        .theme-switcher {
+            position: fixed;
+            bottom: 80px;
+            left: 20px;
+            z-index: 1000;
+        }
+
+        .theme-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 2px solid white;
+            cursor: pointer;
+            margin-bottom: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            transition: transform 0.2s;
+        }
+
+        .theme-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .theme-btn.active {
+            border: 2px solid #333;
+            transform: scale(1.1);
+        }
+
+        #theme-default { background-color: #4CAF50; }
+        #theme-gray { background-color: #9E9E9E; }
+        #theme-pink { background-color: #E91E63; }
+        #theme-yellow { background-color: #FFC107; }
+        #theme-blue { background-color: #2196F3; }
+        #theme-dark { background-color: #424242; }
+
+        .theme-panel {
+            display: none;
+            position: fixed;
+            bottom: 140px;
+            left: 20px;
+            background-color: var(--product-bg);
+            padding: 15px;
+            border-radius: 5px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+            border: 1px solid var(--border-color);
+            z-index: 1000;
+        }
+
+        .theme-panel h3 {
+            margin-top: 0;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .theme-toggle-btn {
+            background-color: var(--primary-color);
+            color: var(--primary-text);
+            border: none;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            z-index: 1000;
         }
     </style>
 </head>
-<body>
+<body class="theme-default">
+    <!-- 主题切换按钮 -->
+    <button class="theme-toggle-btn" onclick="toggleThemePanel()">🎨</button>
+    
+    <div class="theme-panel" id="theme-panel">
+        <h3>选择主题</h3>
+        <div class="theme-btn active" id="theme-default" onclick="changeTheme('default')" title="默认绿色"></div>
+        <div class="theme-btn" id="theme-gray" onclick="changeTheme('gray')" title="白灰配色"></div>
+        <div class="theme-btn" id="theme-pink" onclick="changeTheme('pink')" title="粉色主题"></div>
+        <div class="theme-btn" id="theme-yellow" onclick="changeTheme('yellow')" title="黄色主题"></div>
+        <div class="theme-btn" id="theme-blue" onclick="changeTheme('blue')" title="蓝色主题"></div>
+        <div class="theme-btn" id="theme-dark" onclick="changeTheme('dark')" title="深灰主题"></div>
+    </div>
+    
     <div class="header">
         <h1>积分商城</h1>
     </div>
@@ -257,6 +513,7 @@
                 <button onclick="cancelNameEdit()" style="background-color: #f44336;">取消</button>
             </div>
         </div>
+        <button class="exchange-coins-btn" onclick="window.open('lottery.html', '_blank')">兑换金币</button>
     </div>
     
     <div class="points-display">
@@ -266,7 +523,6 @@
     
     <div class="tab-container">
         <div class="tab active" onclick="switchTab('products')">商品兑换</div>
-        <div class="tab" onclick="switchTab('inventory')">我的仓库</div>
         <div class="tab" onclick="switchTab('records')">兑换记录</div>
         <div class="tab" onclick="switchTab('check-in')">签到记录</div>
         <div class="tab" onclick="switchTab('coupons')">我的优惠券</div>
@@ -282,13 +538,6 @@
         <h2>可兑换商品</h2>
         <div id="product-list">
             <!-- 商品列表将通过JavaScript动态生成 -->
-        </div>
-    </div>
-    
-    <div id="inventory" class="content">
-        <h2>我的仓库</h2>
-        <div id="inventory-list">
-            <!-- 仓库物品列表将通过JavaScript动态生成 -->
         </div>
     </div>
     
@@ -395,18 +644,17 @@
         let points = localStorage.getItem('userPoints') ? parseInt(localStorage.getItem('userPoints')) : 100;
         let userName = localStorage.getItem('userName') || "用户";
         let products = localStorage.getItem('products') ? JSON.parse(localStorage.getItem('products')) : [
-            { id: 1, name: "随机饮料", points: 188, stock: 5 },
-            { id: 2, name: "随机零食", points: 188, stock: 3 },
-            { id: 3, name: "随机文具", points: 188, stock: 2 }
+            { id: 1, name: "饮料", points: 20, stock: 5 },
+            { id: 2, name: "零食", points: 30, stock: 3 },
+            { id: 3, name: "文具", points: 50, stock: 2 }
         ];
         let records = localStorage.getItem('exchangeRecords') ? JSON.parse(localStorage.getItem('exchangeRecords')) : [];
-        let inventory = localStorage.getItem('userInventory') ? JSON.parse(localStorage.getItem('userInventory')) : [];
         let coupons = localStorage.getItem('userCoupons') ? JSON.parse(localStorage.getItem('userCoupons')) : [];
         let couponTemplates = localStorage.getItem('couponTemplates') ? JSON.parse(localStorage.getItem('couponTemplates')) : [
             { id: 1, name: "新人优惠券", code: "WELCOME10", discount: 10 },
-            { id: 2, name: "新人八折券", code: "WELCOME20", discount: 20 }
+            { id: 2, name: "节日特惠", code: "FESTIVAL20", discount: 20 }
         ];
-        const adminPassword = "admin2659465707"; // 默认管理员密码
+        const adminPassword = "admin123"; // 默认管理员密码
         
         // 签到相关数据
         let checkInData = localStorage.getItem('checkInData') ? JSON.parse(localStorage.getItem('checkInData')) : {
@@ -422,6 +670,9 @@
         
         // 当前使用的优惠券
         let activeCoupon = localStorage.getItem('activeCoupon') ? JSON.parse(localStorage.getItem('activeCoupon')) : null;
+        
+        // 当前主题
+        let currentTheme = localStorage.getItem('currentTheme') || 'default';
         
         // 页面加载时初始化
         document.addEventListener('DOMContentLoaded', function() {
@@ -465,7 +716,34 @@
                 renderCouponList();
                 alert(`恭喜获得优惠券: ${randomCoupon.name} (代码: ${randomCoupon.code})`);
             }
+            
+            // 应用保存的主题
+            applyTheme(currentTheme);
         });
+        
+        // 主题切换功能
+        function toggleThemePanel() {
+            const panel = document.getElementById('theme-panel');
+            panel.style.display = panel.style.display === 'block' ? 'none' : 'block';
+        }
+        
+        function changeTheme(theme) {
+            currentTheme = theme;
+            localStorage.setItem('currentTheme', theme);
+            applyTheme(theme);
+            
+            // 更新按钮状态
+            document.querySelectorAll('.theme-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            document.getElementById(`theme-${theme}`).classList.add('active');
+            
+            toggleThemePanel();
+        }
+        
+        function applyTheme(theme) {
+            document.body.className = `theme-${theme}`;
+        }
         
         // 兑换优惠券
         function redeemCoupon() {
@@ -640,22 +918,19 @@
                 const finalPrice = calculateFinalPrice(product.points);
                 
                 // 构建折扣信息
-                let discountInfo = '';
-                if (firstExchange || activeCoupon) {
-                    discountInfo = `<span class="discount-tag">`;
-                    if (firstExchange && activeCoupon) {
-                        discountInfo += `首单9折+${activeCoupon.discount}%`;
-                    } else if (firstExchange) {
-                        discountInfo += `首单9折`;
-                    } else if (activeCoupon) {
-                        discountInfo += `${activeCoupon.discount}%`;
-                    }
-                    discountInfo += `</span>`;
+                let discountInfo = `<span class="discount-tag">`;
+                if (firstExchange && activeCoupon) {
+                    discountInfo += `首单9折+${activeCoupon.discount}%`;
+                } else if (firstExchange) {
+                    discountInfo += `首单9折`;
+                } else if (activeCoupon) {
+                    discountInfo += `${activeCoupon.discount}%`;
                 }
+                discountInfo += `</span>`;
                 
                 productElement.innerHTML = `
                     <div>
-                        <strong>${product.name}</strong>${discountInfo}<br>
+                        <strong>${product.name}</strong>${(firstExchange || activeCoupon) ? discountInfo : ''}<br>
                         需要积分: <span style="text-decoration: ${finalPrice < product.points ? 'line-through' : 'none'}">${product.points}</span>
                         ${finalPrice < product.points ? `→ ${finalPrice}` : ''} | 剩余: ${product.stock}
                     </div>
@@ -700,15 +975,6 @@
             };
             records.unshift(record);
             
-            // 添加到仓库
-            inventory.push({
-                id: Date.now(),
-                productId: product.id,
-                productName: product.name,
-                acquireDate: new Date().toLocaleString(),
-                used: false
-            });
-            
             // 如果是首次兑换，取消首次兑换标志
             if (firstExchange) {
                 firstExchange = false;
@@ -724,7 +990,6 @@
             // 保存数据
             localStorage.setItem('products', JSON.stringify(products));
             localStorage.setItem('exchangeRecords', JSON.stringify(records));
-            localStorage.setItem('userInventory', JSON.stringify(inventory));
             
             // 更新显示
             updatePointsDisplay();
@@ -762,32 +1027,6 @@
                     兑换时间: ${record.date}
                 `;
                 recordList.appendChild(recordElement);
-            });
-        }
-        
-        // 渲染仓库列表
-        function renderInventoryList() {
-            const inventoryList = document.getElementById('inventory-list');
-            inventoryList.innerHTML = '';
-            
-            if (inventory.length === 0) {
-                inventoryList.innerHTML = '<p>仓库空空如也</p>';
-                return;
-            }
-            
-            inventory.forEach(item => {
-                const itemElement = document.createElement('div');
-                itemElement.className = 'inventory-item';
-                itemElement.innerHTML = `
-                    <div>
-                        <strong>${item.productName}</strong><br>
-                        获取时间: ${item.acquireDate}
-                    </div>
-                    <div>
-                        <span style="color: ${item.used ? '#4CAF50' : '#f44336'}">${item.used ? '已使用' : '未使用'}</span>
-                    </div>
-                `;
-                inventoryList.appendChild(itemElement);
             });
         }
         
@@ -1112,6 +1351,41 @@
                 points = newPoints;
                 updatePointsDisplay();
                 document.getElementById('set-points-value').value = '';
+            }
+        }
+        
+        // 积分兑换金币
+        function exchangePointsToCoins(pointsToExchange) {
+            if (pointsToExchange <= 0) {
+                alert('兑换积分必须大于0!');
+                return false;
+            }
+            
+            if (points >= pointsToExchange) {
+                points -= pointsToExchange;
+                updatePointsDisplay();
+                
+                // 保存到本地存储
+                let coins = localStorage.getItem('userCoins') ? parseInt(localStorage.getItem('userCoins')) : 0;
+                coins += pointsToExchange * 10; // 假设兑换率是1:10
+                localStorage.setItem('userCoins', coins);
+                
+                // 添加兑换记录
+                records.unshift({
+                    id: Date.now(),
+                    productName: `兑换金币 (${pointsToExchange}积分)`,
+                    pointsUsed: pointsToExchange,
+                    date: new Date().toLocaleString(),
+                    userName: userName
+                });
+                localStorage.setItem('exchangeRecords', JSON.stringify(records));
+                renderRecordList();
+                
+                alert(`成功兑换 ${pointsToExchange} 积分为 ${pointsToExchange * 10} 金币!`);
+                return true;
+            } else {
+                alert('积分不足!');
+                return false;
             }
         }
     </script>
