@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>幸运抽奖</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+            text-align: center;
+        }
+        .header {
+            margin-bottom: 20px;
+        }
+        .coins-display {
+            background-color: #FFC107;
+            color: black;
+            padding: 15px;
+            border-radius: 5px;
+            font-size: 24px;
+            margin-bottom: 20px;
+            display: inline-block;
+            min-width: 200px;
+        }
+        .lottery-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            display: none;
+        }
+        .lottery-container.active {
+            display: block;
+        }
+        /* 转盘样式 */
+        .wheel-container {
+            position: relative;
+            width: 320px;
+            height: 320px;
+            margin: 0 auto 30px;
+        }
+        .lottery-wheel {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            margin: 0 auto;
+            position: relative;
+            overflow: hidden;
+            border: 10px solid #333;
+            box-shadow: 0 0 0 5px #fff, 0 0 0 10px #333;
+            transition: transform 5s cubic-bezier(0.17, 0.67, 0.12, 0.99);
+        }
+        .lottery-section {
+            position: absolute;
+            width: 50%;
+            height: 50%;
+            transform-origin: bottom right;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-sizing: border-box;
+        }
+        /* 按钮样式 */
+        .spin-btn {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.3s;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .spin-btn:hover:not(:disabled) {
+            background-color: #45a049;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }
+        .spin-btn:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        /* 导航栏样式 */
+        .nav-tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+            background-color: white;
+            border-radius: 5px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .nav-tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+        }
+        .nav-tab.active {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .nav-tab:hover:not(.active) {
+            background-color: #f0f0f0;
+        }
+        .nav-tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80%;
+            height: 3px;
+            background-color: white;
+        }
+        /* 九宫格样式 */
+        .grid-container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        .grid-item {
+            aspect-ratio: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #f8f8f8;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .grid-item.active {
+            background-color: #FFC107;
+            transform: scale(0.95);
+            box-shadow: 0 0 15px rgba(255,193,7,0.7);
+        }
+        .grid-item::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(0,0,0,0.1);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .grid-item.active::after {
+            opacity: 1;
+        }
+        .grid-prize {
+            text-align: center;
+            padding: 5px;
+            z-index: 2;
+        }
+        .grid-highlight {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255,255,255,0.7);
+            z-index: 1;
+            display: none;
+        }
+        .grid-highlight.active {
+            display: block;
+            animation: flash 0.5s infinite alternate;
+        }
+        /* 卡册按钮 */
+        .card-album-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 24px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            z-index: 50;
+            transition: all 0.3s;
+        }
+        .card-album-btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.3);
+        }
+        /* 积分兑换 */
+        .exchange-section {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-top: 20px;
+        }
+        .exchange-form {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        .exchange-form input {
+            padding: 8px;
+            width: 80px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+        .exchange-form button {
+            padding: 8px 15px;
+            background-color: #2196F3;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        .exchange-form button:hover {
+            background-color: #0b7dda;
+        }
+        /* 奖品列表 */
+        .prizes-list {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        .prize-item {
+            background-color: #f8f8f8;
+            padding: 10px;
+            border-radius: 5px;
+            min-width: 100px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+        /* 抽奖记录 */
+        .history-item {
+            background-color: #f8f8f8;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 5px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        .jackpot {
+            color: #f44336;
+            font-weight: bold;
+        }
+        @keyframes flash {
+            from { background-color: rgba(255,255,255,0.7); }
+            to { background-color: rgba(255,215,0,0.7); }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>幸运抽奖</h1>
+    </div>
+    
+    <div class="coins-display">
+        当前金币: <span id="current-coins">0</span>
+    </div>
+    
+    <!-- 导航栏 -->
+    <div class="nav-tabs">
+        <div class="nav-tab active" onclick="switchTab('wheel')">大转盘</div>
+        <div class="nav-tab" onclick="switchTab('grid')">九宫格</div>
+    </div>
+    
+    <!-- 大转盘抽奖 -->
+    <div class="lottery-container active" id="wheel-lottery">
+        <h2>幸运大转盘</h2>
+        <div class="wheel-container">
+            <div class="lottery-wheel" id="lottery-wheel">
+                <!-- 转盘分区将通过JavaScript动态生成 -->
+            </div>
+        </div>
+        <button class="spin-btn" id="spin-btn" onclick="startSpin()">开始抽奖 (100金币)</button>
+    </div>
+    
+    <!-- 九宫格抽奖 -->
+    <div class="lottery-container" id="grid-lottery">
+        <h2>九宫格抽奖</h2>
+        <div class="grid-container" id="grid-container">
+            <!-- 九宫格将通过JavaScript动态生成 -->
+        </div>
+        <button class="spin-btn" id="grid-spin-btn" onclick="startGridSpin()">开始抽奖 (80金币)</button>
+    </div>
+    
+    <!-- 卡册按钮 -->
+    <button class="card-album-btn" onclick="window.open('album.html', '_blank')">📔</button>
+    
+    <div class="exchange-section">
+        <h2>积分兑换金币</h2>
+        <p>当前兑换率: 1积分 = <span id="exchange-rate">10</span>金币</p>
+        <div class="exchange-form">
+            <input type="number" id="exchange-points" placeholder="积分数量" min="1">
+            <button onclick="exchangePoints()">兑换</button>
+        </div>
+    </div>
+    
+    <div class="lottery-container active">
+        <h2>奖品列表</h2>
+        <div class="prizes-list" id="prizes-list">
+            <!-- 奖品列表将通过JavaScript动态生成 -->
+        </div>
+    </div>
+    
+    <div class="lottery-container active">
+        <h2>抽奖记录</h2>
+        <div id="lottery-history">
+            <!-- 抽奖记录将通过JavaScript动态生成 -->
+        </div>
+    </div>
+    
+    <script>
+        // 初始化数据
+        let coins = localStorage.getItem('userCoins') ? parseInt(localStorage.getItem('userCoins')) : 0;
+        let lotteryHistory = localStorage.getItem('lotteryHistory') ? JSON.parse(localStorage.getItem('lotteryHistory')) : [];
+        const exchangeRate = 10; // 1积分 = 10金币
+        
+        // 奖品配置
+        const prizes = [
+            { name: "谢谢参与", value: 0, probability: 30, color: "#f8f8f8" },
+            { name: "10金币", value: 10, probability: 25, color: "#FFEB3B" },
+            { name: "50金币", value: 50, probability: 20, color: "#FFC107" },
+            { name: "100金币", value: 100, probability: 15, color: "#FF9800" },
+            { name: "200金币", value: 200, probability: 8, color: "#FF5722" },
+            { name: "500金币", value: 500, probability: 2, color: "#f44336" }
+        ];
+        
+        // 九宫格奖品配置
+        const gridPrizes = [
+            { name: "5金币", value: 5, probability: 20, color: "#E1F5FE" },
+            { name: "20金币", value: 20, probability: 15, color: "#B3E5FC" },
+            { name: "50金币", value: 50, probability: 10, color: "#81D4FA" },
+            { name: "谢谢参与", value: 0, probability: 25, color: "#f8f8f8" },
+            { name: "100金币", value: 100, probability: 5, color: "#4FC3F7" },
+            { name: "200金币", value: 200, probability: 3, color: "#29B6F6" },
+            { name: "10金币", value: 10, probability: 15, color: "#B3E5FC" },
+            { name: "谢谢参与", value: 0, probability: 25, color: "#f8f8f8" },
+            { name: "500金币", value: 500, probability: 2, color: "#03A9F4" }
+        ];
+        
+        // 页面加载时初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            updateCoinsDisplay();
+            renderLotteryWheel();
+            renderGridLottery();
+            renderPrizesList();
+            renderLotteryHistory();
+            document.getElementById('exchange-rate').textContent = exchangeRate;
+        });
+        
+        // 切换标签页
+        function switchTab(tabId) {
+            // 更新导航标签状态
+            document.querySelectorAll('.nav-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // 更新内容区域
+            document.querySelectorAll('.lottery-container').forEach(container => {
+                container.classList.remove('active');
+            });
+            
+            if (tabId === 'wheel') {
+                document.getElementById('wheel-lottery').classList.add('active');
+            } else if (tabId === 'grid') {
+                document.getElementById('grid-lottery').classList.add('active');
+            }
+            
+            // 保持奖品列表和记录可见
+            document.querySelectorAll('.lottery-container:not(#wheel-lottery):not(#grid-lottery)').forEach(container => {
+                container.classList.add('active');
+            });
+        }
+        
+        // 更新金币显示
+        function updateCoinsDisplay() {
+            document.getElementById('current-coins').textContent = coins;
+            localStorage.setItem('userCoins', coins);
+        }
+        
+        // 渲染转盘（等分）
+        function renderLotteryWheel() {
+            const wheel = document.getElementById('lottery-wheel');
+            wheel.innerHTML = '';
+            
+            const sectionCount = prizes.length;
+            const sectionAngle = 360 / sectionCount;
+            
+            prizes.forEach((prize, index) => {
+                const section = document.createElement('div');
+                section.className = 'lottery-section';
+                section.style.backgroundColor = prize.color;
+                
+                // 计算每个扇区的角度
+                const rotationAngle = index * sectionAngle;
+                section.style.transform = `rotate(${rotationAngle}deg) skewY(${90 - sectionAngle}deg)`;
+                
+                wheel.appendChild(section);
+            });
+        }
+        
+        // 渲染九宫格
+        function renderGridLottery() {
+            const grid = document.getElementById('grid-container');
+            grid.innerHTML = '';
+            
+            gridPrizes.forEach((prize, index) => {
+                const item = document.createElement('div');
+                item.className = 'grid-item';
+                item.dataset.index = index;
+                item.style.backgroundColor = prize.color;
+                
+                const prizeElement = document.createElement('div');
+                prizeElement.className = 'grid-prize';
+                prizeElement.textContent = prize.name;
+                
+                // 大奖特殊样式
+                if (prize.value >= 200) {
+                    prizeElement.style.fontWeight = 'bold';
+                    prizeElement.style.color = '#d4af37';
+                }
+                
+                const highlight = document.createElement('div');
+                highlight.className = 'grid-highlight';
+                
+                item.appendChild(prizeElement);
+                item.appendChild(highlight);
+                grid.appendChild(item);
+            });
+        }
+        
+        // 渲染奖品列表
+        function renderPrizesList() {
+            const list = document.getElementById('prizes-list');
+            list.innerHTML = '';
+            
+            // 合并两种抽奖方式的奖品显示
+            const allPrizes = [...prizes, ...gridPrizes.filter(p => !prizes.some(pp => pp.name === p.name))];
+            const uniquePrizes = Array.from(new Set(allPrizes.map(p => p.name)))
+                .map(name => allPrizes.find(p => p.name === name));
+            
+            uniquePrizes.forEach(prize => {
+                const item = document.createElement('div');
+                item.className = 'prize-item';
+                item.style.backgroundColor = prize.color;
+                item.innerHTML = `
+                    <strong>${prize.name}</strong><br>
+                    价值: ${prize.value}金币<br>
+                    ${prize.value >= 200 ? '<span class="jackpot">大奖!</span>' : ''}
+                `;
+                list.appendChild(item);
+            });
+        }
+        
+        // 开始转盘抽奖
+        function startSpin() {
+            if (coins < 100) {
+                alert('金币不足!');
+                return;
+            }
+            
+            const spinBtn = document.getElementById('spin-btn');
+            spinBtn.disabled = true;
+            
+            coins -= 100;
+            updateCoinsDisplay();
+            
+            // 随机选择奖品
+            const randomNum = Math.random() * 100;
+            let accumulatedProb = 0;
+            let selectedPrize = null;
+            
+            for (const prize of prizes) {
+                accumulatedProb += prize.probability;
+                if (randomNum <= accumulatedProb) {
+                    selectedPrize = prize;
+                    break;
+                }
+            }
+            
+            // 计算旋转角度 (5-10圈 + 奖品位置)
+            const sectionCount = prizes.length;
+            const sectionAngle = 360 / sectionCount;
+            const prizeIndex = prizes.findIndex(p => p === selectedPrize);
+            const prizeAngle = prizeIndex * sectionAngle;
+            
+            const spinAngle = 1800 + Math.floor(Math.random() * 1800) + prizeAngle;
+            
+            // 旋转转盘
+            const wheel = document.getElementById('lottery-wheel');
+            wheel.style.transform = 'rotate(0deg)'; // 重置位置
+            setTimeout(() => {
+                wheel.style.transform = `rotate(${-spinAngle}deg)`;
+            }, 10);
+            
+            // 旋转结束后处理
+            setTimeout(() => {
+                spinBtn.disabled = false;
+                
+                // 发放奖励
+                if (selectedPrize.value > 0) {
+                    coins += selectedPrize.value;
+                    updateCoinsDisplay();
+                }
+                
+                // 记录抽奖结果
+                const record = {
+                    date: new Date().toLocaleString(),
+                    prize: selectedPrize.name,
+                    value: selectedPrize.value,
+                    type: '大转盘'
+                };
+                lotteryHistory.unshift(record);
+                localStorage.setItem('lotteryHistory', JSON.stringify(lotteryHistory));
+                renderLotteryHistory();
+                
+                // 显示结果
+                alert(`恭喜获得: ${selectedPrize.name}${selectedPrize.value > 0 ? ` (${selectedPrize.value}金币)` : ''}`);
+            }, 5000);
+        }
+        
+        // 开始九宫格抽奖
+        function startGridSpin() {
+            if (coins < 80) {
+                alert('金币不足!');
+                return;
+            }
+            
+            const spinBtn = document.getElementById('grid-spin-btn');
+            spinBtn.disabled = true;
+            
+            coins -= 80;
+            updateCoinsDisplay();
+            
+            // 随机选择奖品
+            const randomNum = Math.random() * 100;
+            let accumulatedProb = 0;
+            let selectedPrizeIndex = 0;
+            
+            for (let i = 0; i < gridPrizes.length; i++) {
+                accumulatedProb += gridPrizes[i].probability;
+                if (randomNum <= accumulatedProb) {
+                    selectedPrizeIndex = i;
+                    break;
+                }
+            }
+            
+            const selectedPrize = gridPrizes[selectedPrizeIndex];
+            
+            // 动画效果 - 随机高亮格子
+            const gridItems = document.querySelectorAll('.grid-item');
+            const highlight = document.querySelectorAll('.grid-highlight');
+            
+            // 先重置所有高亮
+            highlight.forEach(h => h.classList.remove('active'));
+            
+            // 随机高亮动画
+            let rounds = 20; // 动画轮数
+            let currentRound = 0;
+            let lastIndex = -1;
+            
+            const animateHighlight = () => {
+                // 移除上一个高亮
+                if (lastIndex >= 0) {
+                    highlight[lastIndex].classList.remove('active');
+                }
+                
+                // 随机选择下一个格子（最后几轮逐渐接近目标）
+                let nextIndex;
+                if (currentRound < rounds - 5) {
+                    // 完全随机
+                    nextIndex = Math.floor(Math.random() * gridItems.length);
+                } else {
+                    // 逐渐接近目标
+                    const distanceToTarget = selectedPrizeIndex - lastIndex;
+                    if (Math.abs(distanceToTarget) <= 1 || currentRound === rounds - 1) {
+                        nextIndex = selectedPrizeIndex;
+                    } else {
+                        const direction = distanceToTarget > 0 ? 1 : -1;
+                        nextIndex = (lastIndex + direction + gridItems.length) % gridItems.length;
+                    }
+                }
+                
+                // 应用高亮
+                highlight[nextIndex].classList.add('active');
+                lastIndex = nextIndex;
+                
+                // 继续动画或结束
+                currentRound++;
+                if (currentRound < rounds) {
+                    setTimeout(animateHighlight, 50 + (currentRound * 5)); // 逐渐变慢
+                } else {
+                    // 动画结束
+                    setTimeout(() => {
+                        spinBtn.disabled = false;
+                        
+                        // 发放奖励
+                        if (selectedPrize.value > 0) {
+                            coins += selectedPrize.value;
+                            updateCoinsDisplay();
+                        }
+                        
+                        // 记录抽奖结果
+                        const record = {
+                            date: new Date().toLocaleString(),
+                            prize: selectedPrize.name,
+                            value: selectedPrize.value,
+                            type: '九宫格'
+                        };
+                        lotteryHistory.unshift(record);
+                        localStorage.setItem('lotteryHistory', JSON.stringify(lotteryHistory));
+                        renderLotteryHistory();
+                        
+                        // 显示结果
+                        alert(`恭喜获得: ${selectedPrize.name}${selectedPrize.value > 0 ? ` (${selectedPrize.value}金币)` : ''}`);
+                    }, 500);
+                }
+            };
+            
+            // 开始动画
+            animateHighlight();
+        }
+        
+        // 渲染抽奖记录
+        function renderLotteryHistory() {
+            const history = document.getElementById('lottery-history');
+            history.innerHTML = '';
+            
+            if (lotteryHistory.length === 0) {
+                history.innerHTML = '<p>暂无抽奖记录</p>';
+                return;
+            }
+            
+            // 只显示最近20条记录
+            const recentHistory = lotteryHistory.slice(0, 20);
+            
+            recentHistory.forEach(record => {
+                const item = document.createElement('div');
+                item.className = 'history-item';
+                item.innerHTML = `
+                    <strong>${record.prize}</strong>
+                    ${record.value > 0 ? ` (${record.value}金币)` : ''}<br>
+                    ${record.date} · ${record.type || '大转盘'}
+                    ${record.value >= 200 ? '<span class="jackpot">★</span>' : ''}
+                `;
+                history.appendChild(item);
+            });
+        }
+        
+        function exchangePoints() {
+            const pointsInput = document.getElementById('exchange-points');
+            const pointsToExchange = parseInt(pointsInput.value);
+    
+            if (isNaN(pointsToExchange) || pointsToExchange <= 0) {
+                alert('请输入有效的积分数量!');
+                return;
+            }
+
+            // 直接从localStorage获取积分数据
+            const points = localStorage.getItem('userPoints') ? parseInt(localStorage.getItem('userPoints')) : 0;
+    
+            if (points < pointsToExchange) {
+                alert('积分不足!');
+                return;
+            }
+
+            // 执行兑换
+            const newPoints = points - pointsToExchange;
+            const newCoins = coins + (pointsToExchange * exchangeRate);
+            
+            // 更新数据
+            localStorage.setItem('userPoints', newPoints);
+            localStorage.setItem('userCoins', newCoins);
+            
+            // 更新显示
+            coins = newCoins;
+            updateCoinsDisplay();
+            
+            // 提示用户
+            alert(`成功兑换 ${pointsToExchange} 积分为 ${pointsToExchange * exchangeRate} 金币!`);
+            pointsInput.value = '';
+            
+            // 可以在这里添加兑换记录
+            const records = localStorage.getItem('exchangeRecords') ? JSON.parse(localStorage.getItem('exchangeRecords')) : [];
+            records.unshift({
+                id: Date.now(),
+                productName: `兑换金币 (${pointsToExchange}积分)`,
+                pointsUsed: pointsToExchange,
+                date: new Date().toLocaleString(),
+                userName: localStorage.getItem('userName') || "用户"
+            });
+            localStorage.setItem('exchangeRecords', JSON.stringify(records));
+        }
+    </script>
+</body>
+</html>
