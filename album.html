@@ -55,6 +55,13 @@
             color: #fff;
         }
         
+        body.theme-sanrio {
+            --primary-color: #FF9DB5;
+            --primary-dark: #FF6B8B;
+            --primary-light: #FFD1DC;
+            background: linear-gradient(135deg, #FFF0F5 0%, #FFE4E1 100%);
+        }
+        
         body.theme-dark .header,
         body.theme-dark .pool-selection,
         body.theme-dark .gacha-section,
@@ -113,6 +120,9 @@
             box-shadow: 0 4px 8px rgba(0,0,0,0.1);
             text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
         }
+
+
+        
         .exchange-btn {
             background: linear-gradient(135deg, #2196F3 0%, #0d47a1 100%);
             color: white;
@@ -560,6 +570,10 @@
             background: linear-gradient(135deg, #673AB7 0%, #512DA8 100%);
             color: white;
         }
+        .theme-option.sanrio {
+            background: linear-gradient(135deg, #FF9DB5 0%, #FF6B8B 100%);
+            color: white;
+        }
         /* 抽卡结果弹窗 */
         .result-card {
             width: 175px; /* 7的25倍 */
@@ -770,6 +784,114 @@
             transform: translateY(-3px);
             box-shadow: 0 6px 15px rgba(0,0,0,0.3);
         }
+        
+        /* 翻牌游戏样式 */
+        .flip-game-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .flip-game-level {
+            font-size: 18px;
+            font-weight: bold;
+            color: var(--primary-dark);
+        }
+        
+        .flip-game-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+             repeat: 8px;
+            width: 100%;
+            max-width: 500px;
+        }
+        
+        .flip-card {
+            aspect-ratio: 1/1;
+            width: 80px; /* 固定宽度 */
+            height: 80px; /* 固定高度 */
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            border-radius: 8px; /* 稍微圆角 */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 24px;
+            color: white;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            margin: 0 auto;
+        }
+        
+        .flip-card:hover {
+            transform: scale(1.05);
+        }
+        
+        .flip-card.revealed {
+            background: white;
+            cursor: default;
+            padding: 5px; 
+        }
+        
+        .flip-card-content {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+        
+        .flip-card img {
+            width: 90%;
+            height: 90%;
+            object-fit: contain;
+        }
+        
+        .flip-card-name {
+            font-size: 12px;
+            font-weight: bold;
+            margin-top: 3px;
+        }
+        
+        .flip-game-info {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            max-width: 500px;
+            padding: 10px;
+            background: #f8f8f8;
+            border-radius: 10px;
+        }
+        
+        .flip-game-btn {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+        }
+        
+        .flip-game-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 12px rgba(0,0,0,0.3);
+        }
+        
+        .flip-game-btn:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
         /* 响应式调整 */
         @media (max-width: 768px) {
             .gacha-buttons {
@@ -792,6 +914,9 @@
             .theme-options {
                 bottom: 110px;
             }
+            .flip-game-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
         }
     </style>
 </head>
@@ -813,10 +938,11 @@
             <div class="pool-tab active" onclick="switchPool('zodiac')">四大神兽</div>
             <div class="pool-tab" onclick="switchPool('constellation')">十二星座</div>
             <div class="pool-tab" onclick="switchPool('seasons')">四季限定</div>
+            <div class="pool-tab" onclick="switchPool('sanrio')">三丽鸥</div>
         </div>
         
         <!-- 简化的SSR选择区域 -->
-        <div class="ssr-selector">
+        <div class="ssr-selector" id="ssr-selector">
             <h3>选择目标SSR卡片</h3>
             <select class="ssr-select" id="ssr-select" onchange="selectSSR(this.value)">
                 <option value="">-- 请选择一张SSR卡片 --</option>
@@ -845,6 +971,10 @@
             <button class="gacha-btn" onclick="drawCard(10)">
                 <span>十连抽</span>
                 <span class="gacha-cost">(450金币)</span>
+            </button>
+            <button class="gacha-btn" id="flip-game-btn" onclick="openFlipGameModal()" style="display: none;">
+                <span>翻牌游戏</span>
+                <span class="gacha-cost">(50金币/次)</span>
             </button>
         </div>
         
@@ -919,6 +1049,19 @@
         </div>
     </div>
     
+    <!-- 翻牌游戏弹窗 -->
+    <div class="modal" id="flip-game-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">三丽鸥翻牌游戏</h3>
+                <button class="close-modal" onclick="closeFlipGameModal()">&times;</button>
+            </div>
+            <div id="flip-game-container" class="flip-game-container">
+                <!-- 翻牌游戏内容将通过JavaScript动态生成 -->
+            </div>
+        </div>
+    </div>
+    
     <!-- 卡册按钮 -->
     <button class="album-btn" onclick="openAlbumModal()">📔</button>
     <button class="shop-btn" onclick="openShopModal()">🛍️</button>
@@ -931,6 +1074,7 @@
         <button class="theme-option yellow" onclick="changeTheme('yellow')">☀</button>
         <button class="theme-option purple" onclick="changeTheme('purple')"></button>
         <button class="theme-option dark" onclick="changeTheme('dark')"></button>
+        <button class="theme-option sanrio" onclick="changeTheme('sanrio')">🎀</button>
     </div>
     
     <script>
@@ -945,6 +1089,9 @@
         let selectedSSR = localStorage.getItem('selectedSSR') || null;
         let currentPool = localStorage.getItem('currentPool') || 'zodiac';
         const exchangeRate = 10; // 1积分 = 10金币
+        
+        // 翻牌游戏状态
+        let flipGameState = localStorage.getItem('flipGameState') ? JSON.parse(localStorage.getItem('flipGameState')) : null;
         
         // 卡池配置 - 整合四季限定为一个池子
         const cardPools = {
@@ -1138,6 +1285,19 @@
             rarity: "R",
             image: `images/cards/seasons/r-seasons-${i+1}.jpg`
             }))
+            },
+            
+            // 三丽鸥卡池
+            sanrio: {
+                name: "三丽鸥",
+                ssr: Array.from({length: 27}, (_, i) => ({
+                    id: `sanrio-ssr-${i+1}`,
+                    name: `三丽鸥角色${i+1}`,
+                    rarity: "SSR",
+                    image: `images/cards/sanrio/ssr-sanrio-${i+1}.jpg`
+                })),
+                sr: [],
+                r: []
             }
         };
         
@@ -1147,9 +1307,53 @@
             name: `塔罗牌${i+1}`,
             rarity: 'SP',
             image: `images/cards/sp/sp-${i+1}.jpg`,
-            cost: 100, // 每个SP卡需要100碎片
+            cost: 188, // 每个SP卡需要100碎片
             description: `大阿卡那第${i+1}号`  
         }));
+        
+        // 翻牌游戏奖励配置
+        const flipGameRewards = {
+            // 每层的奖励配置
+            levels: [
+                { // 第1层
+                    fragments: [1, 2, 3],
+                    nextLevelKey: "level2_key",
+                    nextLevelKeyCount: 1
+                },
+                { // 第2层
+                    fragments: [1, 2, 3],
+                    nextLevelKey: "level3_key",
+                    nextLevelKeyCount: 1
+                },
+                { // 第3层
+                    fragments: [2, 3, 4],
+                    nextLevelKey: "level4_key",
+                    nextLevelKeyCount: 1
+                },
+                { // 第4层
+                    fragments: [2, 3, 4],
+                    nextLevelKey: "level5_key",
+                    nextLevelKeyCount: 1
+                },
+                { // 第5层
+                    fragments: [3, 4, 5],
+                    nextLevelKey: "level6_key",
+                    nextLevelKeyCount: 1
+                },
+                { // 第6层
+                    fragments: [3, 4, 5],
+                    nextLevelKey: "level7_key",
+                    nextLevelKeyCount: 1
+                },
+                { // 第7层
+                    fragments: [3, 4, 5],
+                    nextLevelKey: null, // 最后一层没有下一层钥匙
+                    nextLevelKeyCount: 0
+                }
+            ],
+            // 空奖概率
+            emptyChance: 0.7
+        };
         
         // 页面加载时初始化
         document.addEventListener('DOMContentLoaded', function() {
@@ -1176,6 +1380,9 @@
                     showSSRPreview(card);
                 }
             }
+            
+            // 检查是否显示翻牌游戏按钮
+            updateFlipGameButton();
         });
         
         // 切换主题
@@ -1248,6 +1455,29 @@
             localStorage.removeItem('selectedSSR');
             renderSSRSelection();
             document.getElementById('selected-ssr-preview').style.display = 'none';
+            
+            // 检查是否显示翻牌游戏按钮
+            updateFlipGameButton();
+        }
+        
+        // 更新翻牌游戏按钮显示状态
+        function updateFlipGameButton() {
+            const flipGameBtn = document.getElementById('flip-game-btn');
+            const gachaBtns = document.querySelectorAll('.gacha-buttons button:not(#flip-game-btn)');
+            
+            if (currentPool === 'sanrio') {
+                flipGameBtn.style.display = 'flex';
+                // 隐藏单抽和十连按钮
+                gachaBtns.forEach(btn => {
+                    btn.style.display = 'none';
+                });
+            } else {
+                flipGameBtn.style.display = 'none';
+                // 显示单抽和十连按钮
+                gachaBtns.forEach(btn => {
+                    btn.style.display = 'flex';
+                });
+            }
         }
         
         // 渲染SSR选择下拉菜单
@@ -1306,95 +1536,95 @@
             
             preview.style.display = 'block';
         }
+        
         function drawCard(count) {
             if (!selectedSSR) {
-            alert('请先选择一张SSR卡片作为目标!');
-            return;
-         }
+                alert('请先选择一张SSR卡片作为目标!');
+                return;
+            }
 
-          const cost = count === 1 ? 50 : 450;
-          if (coins < cost) {
-          alert('金币不足!');
-          return;
-         }
+            const cost = count === 1 ? 50 : 450;
+            if (coins < cost) {
+                alert('金币不足!');
+                return;
+            }
 
-        coins -= cost;
-        updateCoinsDisplay();
+            coins -= cost;
+            updateCoinsDisplay();
 
-        const results = [];
-        let gotSSR = false;
-        let gotSR = false;
+            const results = [];
+            let gotSSR = false;
+            let gotSR = false;
 
-    // SR概率递增表（从第0次开始计数）
-        const srProbabilityTable = [
-        5.4,   // 第1次(索引0)
-        9.9,   // 第2次
-        14.5,  // 第3次
-        18.8,  // 第4次
-        23.1,  // 第5次
-        26.9,  // 第6次
-        30.6,  // 第7次
-        34.2,  // 第8次
-        70.1,  // 第9次
-        99.6,  // 第10次
-        100    // 第11次
-        ];
+            // SR概率递增表（从第0次开始计数）
+            const srProbabilityTable = [
+                5.4,   // 第1次(索引0)
+                9.9,   // 第2次
+                14.5,  // 第3次
+                18.8,  // 第4次
+                23.1,  // 第5次
+                26.9,  // 第6次
+                30.6,  // 第7次
+                34.2,  // 第8次
+                70.1,  // 第9次
+                99.6,  // 第10次
+                100    // 第11次
+            ];
 
-    for (let i = 0; i < count; i++) {
-        // 1. 先检查SSR保底(80抽)
-        if (pityCounters.ssr >= 79) {
-            results.push(drawSSR());
-            gotSSR = true;
-            pityCounters.ssr = 0;
-            pityCounters.sr = 0; // SSR也会重置SR计数器
-            continue;
+            for (let i = 0; i < count; i++) {
+                // 1. 先检查SSR保底(80抽)
+                if (pityCounters.ssr >= 79) {
+                    results.push(drawSSR());
+                    gotSSR = true;
+                    pityCounters.ssr = 0;
+                    pityCounters.sr = 0; // SSR也会重置SR计数器
+                    continue;
+                }
+
+                // 2. 获取当前SR概率
+                const currentSRChance = srProbabilityTable[Math.min(pityCounters.sr, 10)];
+                
+                // 3. 生成随机数决定抽卡结果
+                const rand = Math.random() * 100;
+                
+                if (rand < 0.6) {
+                    // SSR 0.6%
+                    results.push(drawSSR());
+                    gotSSR = true;
+                    pityCounters.ssr = 0;
+                    pityCounters.sr = 0; // 抽到SSR也重置SR计数器
+                } 
+                else if (rand < currentSRChance) {
+                    // SR 动态概率
+                    results.push(drawSR());
+                    gotSR = true;
+                    pityCounters.sr = 0; // 重置SR计数器
+                } 
+                else {
+                    // R卡
+                    results.push(drawR());
+                    pityCounters.sr++; // 增加SR计数器
+                }
+
+                pityCounters.ssr++; // 增加SSR计数器
+            }
+
+            updatePityCounters();
+            addCardsToCollection(results);
+            showResults(results);
         }
-
-        // 2. 获取当前SR概率
-        const currentSRChance = srProbabilityTable[Math.min(pityCounters.sr, 10)];
-        
-        // 3. 生成随机数决定抽卡结果
-        const rand = Math.random() * 100;
-        
-        if (rand < 0.6) {
-            // SSR 0.6%
-            results.push(drawSSR());
-            gotSSR = true;
-            pityCounters.ssr = 0;
-            pityCounters.sr = 0; // 抽到SSR也重置SR计数器
-        } 
-        else if (rand < currentSRChance) {
-            // SR 动态概率
-            results.push(drawSR());
-            gotSR = true;
-            pityCounters.sr = 0; // 重置SR计数器
-        } 
-        else {
-            // R卡
-            results.push(drawR());
-            pityCounters.sr++; // 增加SR计数器
-        }
-
-        pityCounters.ssr++; // 增加SSR计数器
-    }
-
-    updatePityCounters();
-    addCardsToCollection(results);
-    showResults(results);
-}
-        
         
         // 抽取SSR卡片
-       function drawSSR() {
-          const pool = cardPools[currentPool];
-    
-          // 直接返回选中的SSR卡片
-          const card = pool.ssr.find(c => c.id === selectedSSR);
-    
-           return {
-          ...card,
-           isNew: !collectedCards[card.id]
-           };
+        function drawSSR() {
+            const pool = cardPools[currentPool];
+            
+            // 直接返回选中的SSR卡片
+            const card = pool.ssr.find(c => c.id === selectedSSR);
+            
+            return {
+                ...card,
+                isNew: !collectedCards[card.id]
+            };
         }
         
         // 抽取SR卡片
@@ -1813,6 +2043,279 @@
             });
             localStorage.setItem('exchangeRecords', JSON.stringify(records));
         }
+        
+        // 打开翻牌游戏弹窗
+        function openFlipGameModal() {
+            if (!selectedSSR) {
+                alert('请先选择一张三丽鸥SSR卡片作为目标!');
+                return;
+            }
+            
+            // 如果没有游戏状态，初始化一个新的游戏
+            if (!flipGameState) {
+                initFlipGame();
+            } else {
+                renderFlipGame();
+            }
+            
+            document.getElementById('flip-game-modal').style.display = 'flex';
+        }
+        
+        // 关闭翻牌游戏弹窗
+        function closeFlipGameModal() {
+            document.getElementById('flip-game-modal').style.display = 'none';
+        }
+        
+        // 初始化翻牌游戏
+        function initFlipGame() {
+            flipGameState = {
+                currentLevel: 0,
+                revealedCards: [],
+                targetCard: selectedSSR,
+                fragmentsEarned: 0,
+                keys: {}
+            };
+            
+            // 保存初始状态
+            saveFlipGameState();
+            
+            // 渲染游戏界面
+            renderFlipGame();
+        }
+        
+        // 保存翻牌游戏状态
+        function saveFlipGameState() {
+            localStorage.setItem('flipGameState', JSON.stringify(flipGameState));
+        }
+        
+        // 渲染翻牌游戏界面
+        function renderFlipGame() {
+            const container = document.getElementById('flip-game-container');
+            container.innerHTML = '';
+            
+            // 添加关卡信息
+            const levelInfo = document.createElement('div');
+            levelInfo.className = 'flip-game-level';
+            levelInfo.textContent = `第 ${flipGameState.currentLevel + 1} 层 (共 7 层)`;
+            container.appendChild(levelInfo);
+            
+            // 添加游戏网格
+            const grid = document.createElement('div');
+            grid.className = 'flip-game-grid';
+            
+            // 创建12张卡片 (3x4)
+            for (let i = 0; i < 12; i++) {
+                const card = document.createElement('div');
+                card.className = 'flip-card';
+                
+                // 检查这张牌是否已经被翻开
+                if (flipGameState.revealedCards.includes(i)) {
+                    card.classList.add('revealed');
+                    
+                    // 获取这张牌的内容
+                    const cardContent = getFlipCardContent(i);
+                    card.innerHTML = `
+                        <div class="flip-card-content">
+                            ${cardContent.image ? `<img src="${cardContent.image}" alt="${cardContent.name}">` : cardContent.name}
+                            <div class="flip-card-name">${cardContent.name}</div>
+                        </div>
+                    `;
+                } else {
+                    card.textContent = '?';
+                    card.onclick = () => flipCard(i);
+                }
+                
+                grid.appendChild(card);
+            }
+            
+            container.appendChild(grid);
+            
+            // 添加游戏信息
+            const gameInfo = document.createElement('div');
+            gameInfo.className = 'flip-game-info';
+            gameInfo.innerHTML = `
+                <span>已获得碎片: ${flipGameState.fragmentsEarned}</span>
+                <span>金币: ${coins}</span>
+            `;
+            container.appendChild(gameInfo);
+            
+              
+              // 将 flipCard 函数移到全局作用域
+                 // 渲染翻牌游戏界面
+        function renderFlipGame() {
+            const container = document.getElementById('flip-game-container');
+            container.innerHTML = '';
+            
+            // 添加关卡信息
+            const levelInfo = document.createElement('div');
+            levelInfo.className = 'flip-game-level';
+            levelInfo.textContent = `第 ${flipGameState.currentLevel + 1} 层 (共 7 层)`;
+            container.appendChild(levelInfo);
+            
+            // 添加游戏网格
+            const grid = document.createElement('div');
+            grid.className = 'flip-game-grid';
+            
+            // 创建12张卡片 (3x4)
+            for (let i = 0; i < 12; i++) {
+                const card = document.createElement('div');
+                card.className = 'flip-card';
+                
+                // 检查这张牌是否已经被翻开
+                if (flipGameState.revealedCards.includes(i)) {
+                    card.classList.add('revealed');
+                    
+                    // 获取这张牌的内容
+                    const cardContent = getFlipCardContent(i);
+                    card.innerHTML = `
+                        <div class="flip-card-content">
+                            ${cardContent.image ? `<img src="${cardContent.image}" alt="${cardContent.name}">` : cardContent.name}
+                            <div class="flip-card-name">${cardContent.name}</div>
+                        </div>
+                    `;
+                } else {
+                    card.textContent = '?';
+                    card.onclick = () => flipCard(i);
+                }
+                
+                grid.appendChild(card);
+            }
+            
+            container.appendChild(grid);
+            
+            // 添加游戏信息
+            const gameInfo = document.createElement('div');
+            gameInfo.className = 'flip-game-info';
+            gameInfo.innerHTML = `
+                <span>已获得碎片: ${flipGameState.fragmentsEarned}</span>
+                <span>金币: ${coins}</span>
+            `;
+            container.appendChild(gameInfo);
+            
+            // 添加翻牌按钮
+            const flipBtn = document.createElement('button');
+            flipBtn.className = 'flip-game-btn';
+            flipBtn.textContent = '翻牌 (50金币)';
+            flipBtn.onclick = () => {
+                if (coins >= 50) {
+                    // 随机翻开一张未翻开的牌
+                    const unrevealedCards = Array.from({length: 12}, (_, i) => i)
+                        .filter(i => !flipGameState.revealedCards.includes(i));
+                    
+                    if (unrevealedCards.length > 0) {
+                        const randomIndex = Math.floor(Math.random() * unrevealedCards.length);
+                        flipCard(unrevealedCards[randomIndex]);
+                    } else {
+                        alert('所有牌都已经翻开了!');
+                    }
+                } else {
+                    alert('金币不足!');
+                }
+            };
+            container.appendChild(flipBtn);
+        }
+        
+        // 获取翻牌游戏卡片内容
+        function getFlipCardContent(cardIndex) {
+            const levelConfig = flipGameRewards.levels[flipGameState.currentLevel];
+            
+            // 检查是否是下一关钥匙
+            if (flipGameState.currentLevel < 6 && cardIndex === 11) {
+                return {
+                    name: `第${flipGameState.currentLevel + 2}层钥匙`,
+                    image: null
+                };
+            }
+            
+            // 检查是否是目标卡片 (最后一层)
+            if (flipGameState.currentLevel === 6 && cardIndex === 11) {
+                const card = cardPools.sanrio.ssr.find(c => c.id === flipGameState.targetCard);
+                return {
+                    name: card.name,
+                    image: card.image
+                };
+            }
+            
+            // 30%概率是空奖
+            if (Math.random() < flipGameRewards.emptyChance) {
+                return {
+                    name: '空奖',
+                    image: null
+                };
+            }
+            
+            // 其他情况是碎片奖励
+            const randomFragments = levelConfig.fragments[Math.floor(Math.random() * levelConfig.fragments.length)];
+            return {
+                name: `${randomFragments}碎片`,
+                image: null,
+                fragments: randomFragments
+            };
+        }
+        // 翻开一张牌
+            function flipCard(cardIndex) {
+                if (coins < 50) {
+                    alert('金币不足!');
+                    return;
+                }
+    
+                // 扣除金币
+                coins -= 50;
+                updateCoinsDisplay();
+    
+                // 标记这张牌为已翻开
+                flipGameState.revealedCards.push(cardIndex);
+    
+                // 获取卡片内容
+                const cardContent = getFlipCardContent(cardIndex);
+    
+                // 处理奖励
+                if (cardContent.fragments) {
+                    // 增加游戏内获得的碎片总数
+                    flipGameState.fragmentsEarned += cardContent.fragments;
+        
+                    // 增加玩家的总碎片数
+                    fragments += cardContent.fragments;
+        
+                    // 保存碎片到本地存储
+                    localStorage.setItem('userFragments', fragments.toString());
+        
+                    // 更新碎片显示
+                    updateFragmentsDisplay();
+                }
+                 // 修改后的钥匙获取逻辑
+                if (flipGameState.currentLevel < 6 && cardIndex === 11) {
+                    flipGameState.currentLevel++;
+                    flipGameState.revealedCards = []; // 关键修复：清空翻牌状态
+                    alert(`获得第${flipGameState.currentLevel + 1}层钥匙！新层级的牌已重置！`);
+                    saveFlipGameState();
+                    renderFlipGame();
+                    return; // 退出函数
+                }
+
+                // 最终层奖励（必须实际翻到第12张牌）
+                if (flipGameState.currentLevel === 6 && cardIndex === 11) {
+                    const card = cardPools.sanrio.ssr.find(c => c.id === flipGameState.targetCard);
+                    addCardsToCollection([{...card, isNew: !collectedCards[card.id]}]);
+                    alert(`恭喜！你亲手翻出了目标卡片【${card.name}】！`);
+                    flipGameState = null;
+                    localStorage.removeItem('flipGameState');
+                }
+
+    
+
+    
+                // 保存游戏状态
+                saveFlipGameState();
+    
+                // 重新渲染游戏界面
+                renderFlipGame();
+            }
+
+
+      }
+
+
     </script>
 </body>
 </html>
