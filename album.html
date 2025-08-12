@@ -1,0 +1,1818 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>卡册</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+            text-align: center;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
+            transition: all 0.3s ease;
+        }
+        
+        /* 主题颜色定义 */
+        body.theme-green {
+            --primary-color: #4CAF50;
+            --primary-dark: #2E7D32;
+            --primary-light: #C8E6C9;
+        }
+        
+        body.theme-pink {
+            --primary-color: #E91E63;
+            --primary-dark: #C2185B;
+            --primary-light: #F8BBD0;
+        }
+        
+        body.theme-blue {
+            --primary-color: #2196F3;
+            --primary-dark: #0d47a1;
+            --primary-light: #BBDEFB;
+        }
+        
+        body.theme-yellow {
+            --primary-color: #FFC107;
+            --primary-dark: #FFA000;
+            --primary-light: #FFECB3;
+        }
+        
+        body.theme-purple {
+            --primary-color: #9C27B0;
+            --primary-dark: #7B1FA2;
+            --primary-light: #E1BEE7;
+        }
+        
+        body.theme-dark {
+            --primary-color: #673AB7;
+            --primary-dark: #512DA8;
+            --primary-light: #D1C4E9;
+            background: linear-gradient(135deg, #121212 0%, #333 100%);
+            color: #fff;
+        }
+        
+        body.theme-dark .header,
+        body.theme-dark .pool-selection,
+        body.theme-dark .gacha-section,
+        body.theme-dark .modal-content {
+            background-color: #1E1E1E;
+            color: #fff;
+            border-color: #333;
+        }
+        
+        body.theme-dark .album-card {
+            background-color: #2d2d2d;
+            border-color: #444;
+        }
+        
+        body.theme-dark .album-card.collected {
+            background-color: #3d3d3d;
+        }
+        
+        body.theme-dark .album-card .card-name {
+            color: #ddd;
+        }
+        
+        body.theme-dark .pity-counter,
+        body.theme-dark .ssr-selector {
+            background: linear-gradient(135deg, #2d2d2d 0%, #252525 100%);
+        }
+        
+        body.theme-dark .shop-item:hover {
+            background-color: #2d2d2d;
+        }
+        
+        body.theme-dark .shop-item-details .shop-item-name {
+            color: #fff;
+        }
+        
+        .header {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+        }
+        .coins-display {
+            background: linear-gradient(135deg, #FFC107 0%, #FF9800 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 24px;
+            margin-bottom: 20px;
+            display: inline-flex;
+            align-items: center;
+            gap: 20px;
+            min-width: 300px;
+            justify-content: center;
+            position: relative;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+        }
+        .exchange-btn {
+            background: linear-gradient(135deg, #2196F3 0%, #0d47a1 100%);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 30px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        .exchange-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+        }
+        /* 卡池选择区域 */
+        .pool-selection {
+            background-color: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            margin-bottom: 25px;
+            border: 1px solid #eaeaea;
+        }
+        .pool-tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .pool-tab {
+            padding: 12px 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+            position: relative;
+            background: linear-gradient(135deg, #f0f0f0 0%, #e0e0e0 100%);
+            border-radius: 30px;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .pool-tab.active {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 10px rgba(0,0,0,0.2);
+        }
+        .pool-tab:hover:not(.active) {
+            background: linear-gradient(135deg, #e0e0e0 0%, #d0d0d0 100%);
+        }
+        /* SSR选择区域 - 简化版 */
+        .ssr-selector {
+            margin-top: 25px;
+            padding: 20px;
+            background: linear-gradient(135deg, #f8f8f8 0%, #f0f0f0 100%);
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
+        }
+        .ssr-select {
+            padding: 12px 20px;
+            font-size: 16px;
+            border-radius: 30px;
+            border: 2px solid var(--primary-color);
+            margin-top: 15px;
+            width: 85%;
+            max-width: 350px;
+            background-color: white;
+            font-weight: bold;
+            outline: none;
+            transition: all 0.3s;
+        }
+        .ssr-select:focus {
+            border-color: #2196F3;
+            box-shadow: 0 0 10px rgba(33,150,243,0.3);
+        }
+        .selected-ssr-preview {
+            margin-top: 20px;
+            display: none;
+        }
+        .selected-ssr-card {
+            width: 140px;
+            height: 240px;
+            margin: 0 auto;
+            background: linear-gradient(135deg, #FFD700 0%, #FFA000 100%);
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+            border: 3px solid #FFC107;
+            overflow: hidden;
+        }
+        .selected-ssr-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .selected-ssr-name {
+            margin-top: 15px;
+            font-weight: bold;
+            font-size: 18px;
+            color: #333;
+        }
+        /* 抽卡区域 */
+        .gacha-section {
+            background-color: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            margin-bottom: 25px;
+            border: 1px solid #eaeaea;
+        }
+        .gacha-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            margin-top: 25px;
+        }
+        .gacha-btn {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            color: white;
+            border: none;
+            padding: 15px 35px;
+            font-size: 18px;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        .gacha-btn:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.3);
+        }
+        .gacha-btn:disabled {
+            background: linear-gradient(135deg, #cccccc 0%, #999999 100%);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        .gacha-cost {
+            font-weight: bold;
+            font-size: 20px;
+        }
+        /* 保底计数器 */
+        .pity-counter {
+            margin-top: 25px;
+            padding: 15px;
+            background: linear-gradient(135deg, #f8f8f8 0%, #f0f0f0 100%);
+            border-radius: 10px;
+            font-size: 16px;
+            box-shadow: inset 0 0 8px rgba(0,0,0,0.05);
+        }
+        /* 弹窗样式 */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(5px);
+        }
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 800px;
+            max-height: 85vh;
+            overflow-y: auto;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            animation: modalFadeIn 0.4s cubic-bezier(0.18, 0.89, 0.32, 1.28);
+            border: 1px solid #e0e0e0;
+        }
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: translateY(-40px) scale(0.95); }
+            to { opacity: 1; transform: translateY(0) scale(1); }
+        }
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            position: sticky;
+            top: 0;
+            background-color: white;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f0f0f0;
+            z-index: 10;
+        }
+        .modal-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 0;
+            color: #333;
+        }
+        .close-modal {
+            background: none;
+            border: none;
+            font-size: 28px;
+            cursor: pointer;
+            color: #777;
+            transition: all 0.3s;
+        }
+        .close-modal:hover {
+            color: #f44336;
+            transform: rotate(90deg);
+        }
+        /* 卡册样式 */
+        .album-tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .album-tab {
+            padding: 10px 20px;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: linear-gradient(135deg, #f0f0f0 0%, #e0e0e0 100%);
+            border-radius: 30px;
+            font-weight: bold;
+        }
+        .album-tab.active {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            color: white;
+            transform: translateY(-3px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        }
+        .album-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+            gap: 18px;
+            padding: 10px;
+        }
+        .album-card {
+            aspect-ratio: 7/12;
+            background-color: #f8f8f8;
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s;
+            border: 2px solid #e0e0e0;
+        }
+        .album-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+        }
+        .album-card.collected {
+            background-color: #fff;
+            border-color: #FFC107;
+        }
+        .album-card.collected::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(255,215,0,0.2) 0%, rgba(255,255,255,0) 50%);
+        }
+        .album-card img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .album-card .card-image-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            position: relative;
+        }
+        .album-card .card-name {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(transparent, rgba(0,0,0,0.8));
+            color: white;
+            padding: 8px;
+            font-size: 13px;
+            text-align: center;
+            z-index: 2;
+        }
+        .album-card .card-rarity {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background-color: rgba(0,0,0,0.7);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: bold;
+            z-index: 2;
+        }
+        .unknown-card {
+            font-size: 36px;
+            font-weight: bold;
+            color: #ccc;
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        /* 卡册按钮 */
+        .album-btn {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            color: white;
+            border: none;
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 28px;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+            z-index: 100;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .album-btn:hover {
+            transform: scale(1.15) rotate(10deg);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+        }
+        .shop-btn {
+            position: fixed;
+            bottom: 120px;
+            right: 30px;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            color: white;
+            border: none;
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 28px;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+            z-index: 100;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .shop-btn:hover {
+            transform: scale(1.15) rotate(-10deg);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+        }
+        /* 主题切换按钮 */
+        .theme-btn {
+            position: fixed;
+            bottom: 30px;
+            left: 30px;
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            color: white;
+            border: none;
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 28px;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+            z-index: 100;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .theme-btn:hover {
+            transform: scale(1.15) rotate(10deg);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+        }
+        /* 主题选择弹窗 */
+        .theme-options {
+            position: fixed;
+            bottom: 120px;
+            left: 30px;
+            background: white;
+            border-radius: 15px;
+            padding: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            z-index: 99;
+            display: none;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .theme-option {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .theme-option:hover {
+            transform: scale(1.1);
+        }
+        .theme-option.green {
+            background: linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%);
+            color: white;
+        }
+        .theme-option.pink {
+            background: linear-gradient(135deg, #E91E63 0%, #C2185B 100%);
+            color: white;
+        }
+        .theme-option.blue {
+            background: linear-gradient(135deg, #2196F3 0%, #0d47a1 100%);
+            color: white;
+        }
+        .theme-option.yellow {
+            background: linear-gradient(135deg, #FFC107 0%, #FFA000 100%);
+            color: white;
+        }
+        .theme-option.purple {
+            background: linear-gradient(135deg, #9C27B0 0%, #7B1FA2 100%);
+            color: white;
+        }
+        .theme-option.dark {
+            background: linear-gradient(135deg, #673AB7 0%, #512DA8 100%);
+            color: white;
+        }
+        /* 抽卡结果弹窗 */
+        .result-card {
+            width: 175px; /* 7的25倍 */
+            height: 300px; /* 12的25倍 */
+            margin: 0 auto;
+            border-radius: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.2);
+            transition: all 0.3s;
+        }
+        .result-card:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        }
+        .result-card.ssr {
+            border: 4px solid #FFD700;
+            background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+        }
+        .result-card.sr {
+            border: 4px solid #C0C0C0;
+            background: linear-gradient(135deg, #C0C0C0 0%, #A0A0A0 100%);
+        }
+        .result-card.r {
+            border: 4px solid #CD7F32;
+            background: linear-gradient(135deg, #CD7F32 0%, #A0522D 100%);
+        }
+        .result-card img {
+            width: 90%;
+            height: 75%;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+        .result-card .rarity {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-weight: bold;
+            font-size: 18px;
+            color: white;
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.7);
+            padding: 5px 10px;
+            border-radius: 20px;
+            background-color: rgba(0,0,0,0.5);
+        }
+        .result-card .card-name {
+            margin-top: 10px;
+            font-weight: bold;
+            font-size: 18px;
+            color: #333;
+            padding: 5px 10px;
+            background-color: rgba(255,255,255,0.8);
+            border-radius: 20px;
+        }
+        .new-badge {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: linear-gradient(135deg, #FF5722 0%, #E64A19 100%);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 14px;
+            z-index: 2;
+            animation: pulse 1.5s infinite;
+        }
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+        /* 商店弹窗 */
+        .shop-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+            transition: all 0.3s;
+            border-radius: 10px;
+        }
+        .shop-item:hover {
+            background-color: #f9f9f9;
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        .shop-item:last-child {
+            border-bottom: none;
+        }
+        .shop-item-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        .shop-item-img {
+            width: 70px;
+            height: 100px;
+            background-color: #f8f8f8;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+            border: 2px solid #e0e0e0;
+        }
+        .shop-item-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .shop-item-details {
+            flex-grow: 1;
+            text-align: left;
+        }
+        .shop-item-name {
+            font-weight: bold;
+            font-size: 18px;
+            color: #333;
+        }
+        .shop-item-desc {
+            font-size: 14px;
+            color: #666;
+            margin-top: 5px;
+        }
+        .shop-item-price {
+            font-weight: bold;
+            color: #FF5722;
+            font-size: 18px;
+            margin-right: 15px;
+        }
+        .shop-item-btn {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            color: white;
+            border: none;
+            padding: 8px 18px;
+            border-radius: 30px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.2);
+        }
+        .shop-item-btn:hover:not(:disabled) {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 12px rgba(0,0,0,0.3);
+        }
+        .shop-item-btn:disabled {
+            background: linear-gradient(135deg, #cccccc 0%, #999999 100%);
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        /* 积分兑换表单 */
+        .exchange-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            max-width: 400px;
+            margin: 0 auto;
+        }
+        .exchange-form-group {
+            display: flex;
+            flex-direction: column;
+            text-align: left;
+        }
+        .exchange-form-group label {
+            margin-bottom: 8px;
+            font-weight: bold;
+            font-size: 16px;
+            color: #333;
+        }
+        .exchange-form-group input {
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        .exchange-form-group input:focus {
+            border-color: #2196F3;
+            box-shadow: 0 0 10px rgba(33,150,243,0.3);
+            outline: none;
+        }
+        .info-text {
+            font-size: 14px;
+            color: #666;
+            margin-top: 8px;
+        }
+        .exchange-submit {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            color: white;
+            border: none;
+            padding: 14px;
+            border-radius: 8px;
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 15px;
+            font-weight: bold;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+        }
+        .exchange-submit:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+        }
+        /* 响应式调整 */
+        @media (max-width: 768px) {
+            .gacha-buttons {
+                flex-direction: column;
+                gap: 15px;
+            }
+            .pool-tabs {
+                flex-direction: column;
+                align-items: center;
+            }
+            .album-grid {
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            }
+            .shop-btn {
+                bottom: 110px;
+            }
+            .theme-btn {
+                bottom: 30px;
+            }
+            .theme-options {
+                bottom: 110px;
+            }
+        }
+    </style>
+</head>
+<body class="theme-green">
+    <div class="header">
+        <h1>🎴 卡片收集</h1>
+        <p>收集稀有卡片，完成你的专属收藏！</p>
+    </div>
+    
+    <div class="coins-display">
+        <span>当前金币: <span id="current-coins">5000</span></span>
+        <button class="exchange-btn" onclick="openExchangeModal()">积分兑换</button>
+    </div>
+    
+    <!-- 卡池选择区域 -->
+    <div class="pool-selection">
+        <h2>选择卡池</h2>
+        <div class="pool-tabs">
+            <div class="pool-tab active" onclick="switchPool('zodiac')">四大神兽</div>
+            <div class="pool-tab" onclick="switchPool('constellation')">十二星座</div>
+            <div class="pool-tab" onclick="switchPool('seasons')">四季限定</div>
+        </div>
+        
+        <!-- 简化的SSR选择区域 -->
+        <div class="ssr-selector">
+            <h3>选择目标SSR卡片</h3>
+            <select class="ssr-select" id="ssr-select" onchange="selectSSR(this.value)">
+                <option value="">-- 请选择一张SSR卡片 --</option>
+                <!-- SSR选项将通过JavaScript动态生成 -->
+            </select>
+            
+            <div class="selected-ssr-preview" id="selected-ssr-preview">
+                <div class="selected-ssr-card" id="selected-ssr-card">
+                    <!-- 卡片预览内容 -->
+                </div>
+                <div class="selected-ssr-name" id="selected-ssr-name"></div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 抽卡区域 -->
+    <div class="gacha-section">
+        <h2>抽卡</h2>
+        <p>当前卡池: <span id="current-pool-name">十二生肖</span></p>
+        
+        <div class="gacha-buttons">
+            <button class="gacha-btn" onclick="drawCard(1)">
+                <span>单抽</span>
+                <span class="gacha-cost">(50金币)</span>
+            </button>
+            <button class="gacha-btn" onclick="drawCard(10)">
+                <span>十连抽</span>
+                <span class="gacha-cost">(450金币)</span>
+            </button>
+        </div>
+        
+        <div class="pity-counter">
+            <div>SSR保底计数: <span id="ssr-pity">0</span>/80 (80抽必得SSR)</div>
+            <div>SR保底计数: <span id="sr-pity">0</span>/10 (10抽必得SR或以上)</div>
+        </div>
+    </div>
+    
+    <!-- 抽卡结果弹窗 -->
+    <div class="modal" id="result-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">抽卡结果</h3>
+                <button class="close-modal" onclick="closeResultModal()">&times;</button>
+            </div>
+            <div id="result-container">
+                <!-- 抽卡结果将通过JavaScript动态生成 -->
+            </div>
+            <button class="gacha-btn" onclick="closeResultModal()" style="margin-top: 20px;">确定</button>
+        </div>
+    </div>
+    
+    <!-- 卡册弹窗 -->
+    <div class="modal" id="album-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">我的卡册</h3>
+                <button class="close-modal" onclick="closeAlbumModal()">&times;</button>
+            </div>
+            <div class="album-tabs" id="album-tabs">
+                <!-- 卡册标签将通过JavaScript动态生成 -->
+            </div>
+            <div class="album-grid" id="album-grid">
+                <!-- 卡册内容将通过JavaScript动态生成 -->
+            </div>
+        </div>
+    </div>
+    
+    <!-- 碎片商店弹窗 -->
+    <div class="modal" id="shop-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">碎片商店 <span id="modal-fragments-count">(0碎片)</span></h3>
+                <button class="close-modal" onclick="closeShopModal()">&times;</button>
+            </div>
+            <div id="shop-items">
+                <!-- 商店物品将通过JavaScript动态生成 -->
+            </div>
+        </div>
+    </div>
+    
+    <!-- 积分兑换弹窗 -->
+    <div class="modal" id="exchange-modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">积分兑换金币</h3>
+                <button class="close-modal" onclick="closeExchangeModal()">&times;</button>
+            </div>
+            <div class="exchange-form">
+                <div class="exchange-form-group">
+                    <label for="modal-exchange-points">兑换积分</label>
+                    <input type="number" id="modal-exchange-points" placeholder="输入积分数量" min="1">
+                    <p class="info-text">当前兑换率: 1积分 = <span id="modal-exchange-rate">10</span>金币</p>
+                </div>
+                <div class="exchange-form-group">
+                    <label>可获得金币</label>
+                    <input type="text" id="modal-exchange-result" placeholder="0" readonly>
+                </div>
+                <button class="exchange-submit" onclick="modalExchangePoints()">确认兑换</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- 卡册按钮 -->
+    <button class="album-btn" onclick="openAlbumModal()">📔</button>
+    <button class="shop-btn" onclick="openShopModal()">🛍️</button>
+    <!-- 主题切换按钮 -->
+    <button class="theme-btn" onclick="toggleThemeOptions()">🎨</button>
+    <div class="theme-options" id="theme-options">
+        <button class="theme-option green" onclick="changeTheme('green')"></button>
+        <button class="theme-option pink" onclick="changeTheme('pink')"></button>
+        <button class="theme-option blue" onclick="changeTheme('blue')"></button>
+        <button class="theme-option yellow" onclick="changeTheme('yellow')">☀</button>
+        <button class="theme-option purple" onclick="changeTheme('purple')"></button>
+        <button class="theme-option dark" onclick="changeTheme('dark')"></button>
+    </div>
+    
+    <script>
+        // 初始化数据
+        let coins = localStorage.getItem('userCoins') ? parseInt(localStorage.getItem('userCoins')) : 5000;
+        let fragments = localStorage.getItem('userFragments') ? parseInt(localStorage.getItem('userFragments')) : 25;
+        let collectedCards = localStorage.getItem('collectedCards') ? JSON.parse(localStorage.getItem('collectedCards')) : {};
+        let pityCounters = localStorage.getItem('pityCounters') ? JSON.parse(localStorage.getItem('pityCounters')) : {
+            ssr: 0,
+            sr: 0
+        };
+        let selectedSSR = localStorage.getItem('selectedSSR') || null;
+        let currentPool = localStorage.getItem('currentPool') || 'zodiac';
+        const exchangeRate = 10; // 1积分 = 10金币
+        
+        // 卡池配置 - 整合四季限定为一个池子
+        const cardPools = {
+            zodiac: {
+               name: "神兽生肖",
+               ssr: [
+                  {
+                       id: "beast-ssr-1",
+                       name: "青龙",
+                       rarity: "SSR",
+                       image: "images/cards/animal/ssr-animal1.jpg"
+                   },
+                   {
+                      id: "beast-ssr-2",
+                      name: "白虎",
+                      rarity: "SSR",
+                      image: "images/cards/animal/ssr-animal2.jpg"
+                    },
+                    {
+                      id: "beast-ssr-3",
+                      name: "朱雀",
+                      rarity: "SSR",
+                      image: "images/cards/animal/ssr-animal3.jpg"
+                   },
+                   {
+                      id: "beast-ssr-4",
+                      name: "玄武",
+                      rarity: "SSR",
+                      image: "images/cards/animal/ssr-animal4.jpg"
+                }
+             ],
+            sr: [
+          // 十二生肖
+                { id: "zodiac-sr-1", name: "子鼠", rarity: "SR", image: "images/cards/animal/sr-rat.jpg" },
+                { id: "zodiac-sr-2", name: "丑牛", rarity: "SR", image: "images/cards/animal/sr-ox.jpg" },
+                { id: "zodiac-sr-3", name: "寅虎", rarity: "SR", image: "images/cards/animal/sr-tiger.jpg" },
+                { id: "zodiac-sr-4", name: "卯兔", rarity: "SR", image: "images/cards/animal/sr-rabbit.jpg" },
+                { id: "zodiac-sr-5", name: "辰龙", rarity: "SR", image: "images/cards/animal/sr-dragon.jpg" },
+                { id: "zodiac-sr-6", name: "巳蛇", rarity: "SR", image: "images/cards/animal/sr-snake.jpg" },
+                { id: "zodiac-sr-7", name: "午马", rarity: "SR", image: "images/cards/animal/sr-horse.jpg" },
+                { id: "zodiac-sr-8", name: "未羊", rarity: "SR", image: "images/cards/animal/sr-goat.jpg" },
+                { id: "zodiac-sr-9", name: "申猴", rarity: "SR", image: "images/cards/animal/sr-monkey.jpg" },
+                { id: "zodiac-sr-10", name: "酉鸡", rarity: "SR", image: "images/cards/animal/sr-rooster.jpg" },
+                { id: "zodiac-sr-11", name: "戌狗", rarity: "SR", image: "images/cards/animal/sr-dog.jpg" },
+                { id: "zodiac-sr-12", name: "亥猪", rarity: "SR", image: "images/cards/animal/sr-pig.jpg" }
+                ],
+            r: Array.from({length: 48}, (_, i) => {
+          // 常见动物名称数组（示例）
+             const animals = [
+                "熊猫", "狮子", "大象", "长颈鹿", "斑马", "犀牛", 
+                "猎豹", "狼", "狐狸", "熊", "鹿", "河马",
+                "袋鼠", "考拉", "企鹅", "海豚", "鲨鱼", "老鹰",
+                "猫头鹰", "孔雀", "鹦鹉", "青蛙", "乌龟", "蜥蜴",
+                "鳄鱼", "猩猩", "松鼠", "刺猬", "鸭子", "骆驼",
+                "羚羊", "水牛", "犀鸟", "天鹅", "鹤", "信天翁",
+                "章鱼", "水母", "海星", "螃蟹", "龙虾", "蝴蝶",
+                "蜜蜂", "蜻蜓", "蜘蛛", "蝎子", "变色龙", "穿山甲"
+                 ];
+        
+                    return {
+                    id: `animal-r-${i+1}`,
+                    name: animals[i] || `动物${i+1}`,
+                    rarity: "R",
+                    image: `images/cards/animal/r-animal-${i + 1}.jpg`
+                 };
+              })
+            },
+            constellation: {
+                name: "十二星座",
+                ssr: [
+                    { id: "constellation-ssr-1", name: "白羊座", rarity: "SSR", image: "images/cards/star/ssr-aries.jpg" },
+                    { id: "constellation-ssr-2", name: "金牛座", rarity: "SSR", image: "images/cards/star/ssr-taurus.jpg" },
+                    { id: "constellation-ssr-3", name: "双子座", rarity: "SSR", image: "images/cards/star/ssr-gemini.jpg" },
+                    { id: "constellation-ssr-4", name: "巨蟹座", rarity: "SSR", image: "images/cards/star/ssr-cancer.jpg" },
+                    { id: "constellation-ssr-5", name: "狮子座", rarity: "SSR", image: "images/cards/star/ssr-leo.jpg" },
+                    { id: "constellation-ssr-6", name: "处女座", rarity: "SSR", image: "images/cards/star/ssr-virgo.jpg" },
+                    { id: "constellation-ssr-7", name: "天秤座", rarity: "SSR", image: "images/cards/star/ssr-libra.jpg" },
+                    { id: "constellation-ssr-8", name: "天蝎座", rarity: "SSR", image: "images/cards/star/ssr-scorpio.jpg" },
+                    { id: "constellation-ssr-9", name: "射手座", rarity: "SSR", image: "images/cards/star/ssr-sagittarius.jpg" },
+                    { id: "constellation-ssr-10", name: "摩羯座", rarity: "SSR", image: "images/cards/star/ssr-capricorn.jpg" },
+                    { id: "constellation-ssr-11", name: "水瓶座", rarity: "SSR", image: "images/cards/star/ssr-aquarius.jpg" },
+                    { id: "constellation-ssr-12", name: "双鱼座", rarity: "SSR", image: "images/cards/star/ssr-pisces.jpg" }
+                ],
+                sr: [
+                    { id: "constellation-sr-1", name: "太阳", rarity: "SR", image: "images/cards/star/sr-sun.jpg" },
+                    { id: "constellation-sr-2", name: "水星", rarity: "SR", image: "images/cards/star/sr-mercury.jpg" },
+                    { id: "constellation-sr-3", name: "金星", rarity: "SR", image: "images/cards/star/sr-venus.jpg" },
+                    { id: "constellation-sr-4", name: "地球", rarity: "SR", image: "images/cards/star/sr-earth.jpg" },
+                    { id: "constellation-sr-5", name: "月球", rarity: "SR", image: "images/cards/star/sr-moon.jpg" },
+                    { id: "constellation-sr-6", name: "火星", rarity: "SR", image: "images/cards/star/sr-mars.jpg" },
+                    { id: "constellation-sr-7", name: "木星", rarity: "SR", image: "images/cards/star/sr-jupiter.jpg" },
+                    { id: "constellation-sr-8", name: "土星", rarity: "SR", image: "images/cards/star/sr-saturn.jpg" },
+                    { id: "constellation-sr-9", name: "天王星", rarity: "SR", image: "images/cards/star/sr-uranus.jpg" },
+                    { id: "constellation-sr-10", name: "海王星", rarity: "SR", image: "images/cards/star/sr-neptune.jpg" }
+                ],
+                r: Array.from({length: 76}, (_, i) => {
+        // 现代星座名称数组（示例）
+        const modernConstellations = [
+            "仙女座", "唧筒座", "天燕座", "宝瓶座", "天鹰座", "天坛座",
+            "白羊座", "御夫座", "牧夫座", "雕具座", "鹿豹座", "巨蟹座",
+            "猎犬座", "大犬座", "小犬座", "摩羯座", "船底座", "仙后座",
+            "半人马座", "仙王座", "鲸鱼座", "堰蜓座", "圆规座", "天鸽座",
+            "后发座", "南冕座", "北冕座", "乌鸦座", "巨爵座", "南十字座",
+            "天鹅座", "海豚座", "剑鱼座", "天龙座", "小马座", "波江座",
+            "天炉座", "双子座", "天鹤座", "武仙座", "时钟座", "长蛇座",
+            "水蛇座", "印第安座", "蝎虎座", "狮子座", "小狮座", "天兔座",
+            "天秤座", "豺狼座", "天猫座", "天琴座", "山案座", "显微镜座",
+            "麒麟座", "苍蝇座", "矩尺座", "南极座", "蛇夫座", "猎户座",
+            "孔雀座", "飞马座", "英仙座", "凤凰座", "绘架座", "双鱼座",
+            "南鱼座", "船尾座", "罗盘座", "网罟座", "天箭座", "人马座",
+            "天蝎座", "玉夫座", "盾牌座", "巨蛇座", "六分仪座", "金牛座",
+            "望远镜座", "三角座", "南三角座", "杜鹃座", "大熊座", "小熊座",
+            "船帆座", "室女座", "飞鱼座", "狐狸座"
+        ];
+        
+                    return {
+                        id: `constellation-r-${i+1}`,
+                        name: modernConstellations[i] || `星座${i+1}`,
+                        rarity: "R",
+                        image: `images/cards/star/r-constellation-${i+1}.jpg`
+                    };
+                })
+            },
+            
+
+            seasons: {
+                name: "四季限定",
+                ssr: [
+                        {
+                        id: `season-ssr-spring`, 
+                        name: `春`, 
+                        rarity: 'SSR',
+                        image: "images/cards/seasons/ssr-spring.jpg"
+                        },
+                    {
+                        id: `season-ssr-summer`, 
+                        name: `夏`, 
+                        rarity: 'SSR',
+                        image: "images/cards/seasons/ssr-summer.jpg"
+                    },
+                    {
+                        id: `season-ssr-autumn`, 
+                        name: `秋`, 
+                        rarity: 'SSR',
+                        image: "images/cards/seasons/ssr-autumn.jpg"
+                    },
+                    {
+                        id: `season-ssr-winter`, 
+                        name: `冬`, 
+                        rarity: 'SSR',
+                        image:  "images/cards/seasons/ssr-winter.jpg"
+                    }
+                ],
+ 
+            sr: [
+            // 春季节气（6张）
+            { id: "sr-spring-1", name: "立春", rarity: "SR", image: "images/cards/seasons/sr-spring-1.jpg" },
+            { id: "sr-spring-2", name: "雨水", rarity: "SR", image: "images/cards/seasons/sr-spring-2.jpg" },
+            { id: "sr-spring-3", name: "惊蛰", rarity: "SR", image: "images/cards/seasons/sr-spring-3.jpg" },
+            { id: "sr-spring-4", name: "春分", rarity: "SR", image: "images/cards/seasons/sr-spring-4.jpg" },
+            { id: "sr-spring-5", name: "清明", rarity: "SR", image: "images/cards/seasons/sr-spring-5.jpg" },
+            { id: "sr-spring-6", name: "谷雨", rarity: "SR", image: "images/cards/seasons/sr-spring-6.jpg" },
+            
+            // 夏季节气（6张）
+            { id: "sr-summer-1", name: "立夏", rarity: "SR", image: "images/cards/seasons/sr-summer-1.jpg" },
+            { id: "sr-summer-2", name: "小满", rarity: "SR", image: "images/cards/seasons/sr-summer-2.jpg" },
+            { id: "sr-summer-3", name: "芒种", rarity: "SR", image: "images/cards/seasons/sr-summer-3.jpg" },
+            { id: "sr-summer-4", name: "夏至", rarity: "SR", image: "images/cards/seasons/sr-summer-4.jpg" },
+            { id: "sr-summer-5", name: "小暑", rarity: "SR", image: "images/cards/seasons/sr-summer-5.jpg" },
+            { id: "sr-summer-6", name: "大暑", rarity: "SR", image: "images/cards/seasons/sr-summer-6.jpg" },
+            
+            // 秋季节气（6张）
+            { id: "sr-autumn-1", name: "立秋", rarity: "SR", image: "images/cards/seasons/sr-autumn-1.jpg" },
+            { id: "sr-autumn-2", name: "处暑", rarity: "SR", image: "images/cards/seasons/sr-autumn-2.jpg" },
+            { id: "sr-autumn-3", name: "白露", rarity: "SR", image: "images/cards/seasons/sr-autumn-3.jpg" },
+            { id: "sr-autumn-4", name: "秋分", rarity: "SR", image: "images/cards/seasons/sr-autumn-4.jpg" },
+            { id: "sr-autumn-5", name: "寒露", rarity: "SR", image: "images/cards/seasons/sr-autumn-5.jpg" },
+            { id: "sr-autumn-6", name: "霜降", rarity: "SR", image: "images/cards/seasons/sr-autumn-6.jpg" },
+            
+            // 冬季节气（6张）
+            { id: "sr-winter-1", name: "立冬", rarity: "SR", image: "images/cards/seasons/sr-winter-1.jpg" },
+            { id: "sr-winter-2", name: "小雪", rarity: "SR", image: "images/cards/seasons/sr-winter-2.jpg" },
+            { id: "sr-winter-3", name: "大雪", rarity: "SR", image: "images/cards/seasons/sr-winter-3.jpg" },
+            { id: "sr-winter-4", name: "冬至", rarity: "SR", image: "images/cards/seasons/sr-winter-4.jpg" },
+            { id: "sr-winter-5", name: "小寒", rarity: "SR", image: "images/cards/seasons/sr-winter-5.jpg" },
+            { id: "sr-winter-6", name: "大寒", rarity: "SR", image: "images/cards/seasons/sr-winter-6.jpg" }
+             ],
+            r: Array.from({length: 72}, (_, i) => ({
+            id: `season-r-${i+1}`,
+            name: `四季${i+1}`,
+            rarity: "R",
+            image: `images/cards/seasons/r-seasons-${i+1}.jpg`
+            }))
+            }
+        };
+        
+        // 特殊SP卡片(塔罗牌)
+        const spCards = Array.from({length: 22}, (_, i) => ({
+            id: `sp-${i+1}`,
+            name: `塔罗牌${i+1}`,
+            rarity: 'SP',
+            image: `images/cards/sp/sp-${i+1}.jpg`,
+            cost: 100, // 每个SP卡需要100碎片
+            description: `大阿卡那第${i+1}号`  
+        }));
+        
+        // 页面加载时初始化
+        document.addEventListener('DOMContentLoaded', function() {
+            // 应用保存的主题
+            const savedTheme = localStorage.getItem('selectedTheme') || 'green';
+            document.body.className = `theme-${savedTheme}`;
+            
+            updateCoinsDisplay();
+            updateFragmentsDisplay();
+            renderSSRSelection();
+            updatePityCounters();
+            document.getElementById('current-pool-name').textContent = cardPools[currentPool].name;
+            document.getElementById('modal-exchange-rate').textContent = exchangeRate;
+            
+            // 监听积分输入变化
+            document.getElementById('modal-exchange-points').addEventListener('input', function() {
+                updateExchangeResult();
+            });
+            
+            // 如果有选中的SSR，显示预览
+            if (selectedSSR) {
+                const card = getAllSSRCards().find(c => c.id === selectedSSR);
+                if (card) {
+                    showSSRPreview(card);
+                }
+            }
+        });
+        
+        // 切换主题
+        function changeTheme(theme) {
+            document.body.className = `theme-${theme}`;
+            localStorage.setItem('selectedTheme', theme);
+            closeThemeOptions();
+        }
+        
+        // 显示/隐藏主题选项
+        function toggleThemeOptions() {
+            const options = document.getElementById('theme-options');
+            if (options.style.display === 'flex') {
+                options.style.display = 'none';
+            } else {
+                options.style.display = 'flex';
+            }
+        }
+        
+        // 关闭主题选项
+        function closeThemeOptions() {
+            document.getElementById('theme-options').style.display = 'none';
+        }
+        
+        // 获取当前卡池的所有SSR卡片
+        function getAllSSRCards() {
+            return cardPools[currentPool].ssr;
+        }
+        
+        // 更新金币显示
+        function updateCoinsDisplay() {
+            document.getElementById('current-coins').textContent = coins;
+            localStorage.setItem('userCoins', coins);
+        }
+        
+        // 更新碎片显示
+        function updateFragmentsDisplay() {
+            try {
+                fragments = parseInt(localStorage.getItem('userFragments')) || 0;
+                const counter = document.getElementById('modal-fragments-count');
+                if (counter) {
+                    counter.textContent = `(${fragments}碎片)`;
+                }
+            } catch (e) {
+                console.error("更新碎片显示失败:", e);
+            }
+        }
+        
+        // 更新保底计数器显示
+        function updatePityCounters() {
+            document.getElementById('ssr-pity').textContent = pityCounters.ssr;
+            document.getElementById('sr-pity').textContent = pityCounters.sr;
+            localStorage.setItem('pityCounters', JSON.stringify(pityCounters));
+        }
+        
+        // 切换卡池
+        function switchPool(poolId) {
+            // 更新卡池标签状态
+            document.querySelectorAll('.pool-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            currentPool = poolId;
+            localStorage.setItem('currentPool', currentPool);
+            document.getElementById('current-pool-name').textContent = cardPools[currentPool].name;
+            
+            // 重置选中的SSR
+            selectedSSR = null;
+            localStorage.removeItem('selectedSSR');
+            renderSSRSelection();
+            document.getElementById('selected-ssr-preview').style.display = 'none';
+        }
+        
+        // 渲染SSR选择下拉菜单
+        function renderSSRSelection() {
+            const select = document.getElementById('ssr-select');
+            select.innerHTML = '';
+            
+            // 添加默认选项
+            const defaultOption = document.createElement('option');
+            defaultOption.value = '';
+            defaultOption.textContent = '-- 请选择一张SSR卡片 --';
+            select.appendChild(defaultOption);
+            
+            // 添加SSR卡片选项
+            const pool = cardPools[currentPool];
+            pool.ssr.forEach(card => {
+                const option = document.createElement('option');
+                option.value = card.id;
+                option.textContent = card.name;
+                select.appendChild(option);
+            });
+            
+            // 设置已选中的SSR
+            if (selectedSSR) {
+                select.value = selectedSSR;
+            }
+        }
+        
+        // 选择SSR卡片
+        function selectSSR(cardId) {
+            if (!cardId) {
+                selectedSSR = null;
+                localStorage.removeItem('selectedSSR');
+                document.getElementById('selected-ssr-preview').style.display = 'none';
+                return;
+            }
+            
+            selectedSSR = cardId;
+            localStorage.setItem('selectedSSR', selectedSSR);
+            
+            // 显示选中的SSR预览
+            const card = getAllSSRCards().find(c => c.id === cardId);
+            if (card) {
+                showSSRPreview(card);
+            }
+        }
+        
+        // 显示SSR卡片预览
+        function showSSRPreview(card) {
+            const preview = document.getElementById('selected-ssr-preview');
+            const cardElement = document.getElementById('selected-ssr-card');
+            const nameElement = document.getElementById('selected-ssr-name');
+            
+            cardElement.innerHTML = `<img src="${card.image}" alt="${card.name}">`;
+            nameElement.textContent = card.name;
+            
+            preview.style.display = 'block';
+        }
+        function drawCard(count) {
+            if (!selectedSSR) {
+            alert('请先选择一张SSR卡片作为目标!');
+            return;
+         }
+
+          const cost = count === 1 ? 50 : 450;
+          if (coins < cost) {
+          alert('金币不足!');
+          return;
+         }
+
+        coins -= cost;
+        updateCoinsDisplay();
+
+        const results = [];
+        let gotSSR = false;
+        let gotSR = false;
+
+    // SR概率递增表（从第0次开始计数）
+        const srProbabilityTable = [
+        5.4,   // 第1次(索引0)
+        9.9,   // 第2次
+        14.5,  // 第3次
+        18.8,  // 第4次
+        23.1,  // 第5次
+        26.9,  // 第6次
+        30.6,  // 第7次
+        34.2,  // 第8次
+        70.1,  // 第9次
+        99.6,  // 第10次
+        100    // 第11次
+        ];
+
+    for (let i = 0; i < count; i++) {
+        // 1. 先检查SSR保底(80抽)
+        if (pityCounters.ssr >= 79) {
+            results.push(drawSSR());
+            gotSSR = true;
+            pityCounters.ssr = 0;
+            pityCounters.sr = 0; // SSR也会重置SR计数器
+            continue;
+        }
+
+        // 2. 获取当前SR概率
+        const currentSRChance = srProbabilityTable[Math.min(pityCounters.sr, 10)];
+        
+        // 3. 生成随机数决定抽卡结果
+        const rand = Math.random() * 100;
+        
+        if (rand < 0.6) {
+            // SSR 0.6%
+            results.push(drawSSR());
+            gotSSR = true;
+            pityCounters.ssr = 0;
+            pityCounters.sr = 0; // 抽到SSR也重置SR计数器
+        } 
+        else if (rand < currentSRChance) {
+            // SR 动态概率
+            results.push(drawSR());
+            gotSR = true;
+            pityCounters.sr = 0; // 重置SR计数器
+        } 
+        else {
+            // R卡
+            results.push(drawR());
+            pityCounters.sr++; // 增加SR计数器
+        }
+
+        pityCounters.ssr++; // 增加SSR计数器
+    }
+
+    updatePityCounters();
+    addCardsToCollection(results);
+    showResults(results);
+}
+        
+        
+        // 抽取SSR卡片
+       function drawSSR() {
+          const pool = cardPools[currentPool];
+    
+          // 直接返回选中的SSR卡片
+          const card = pool.ssr.find(c => c.id === selectedSSR);
+    
+           return {
+          ...card,
+           isNew: !collectedCards[card.id]
+           };
+        }
+        
+        // 抽取SR卡片
+        function drawSR() {
+            const pool = cardPools[currentPool];
+            const card = pool.sr[Math.floor(Math.random() * pool.sr.length)];
+            return {
+                ...card,
+                isNew: !collectedCards[card.id]
+            };
+        }
+        
+        // 抽取R卡片
+        function drawR() {
+            const pool = cardPools[currentPool];
+            const card = pool.r[Math.floor(Math.random() * pool.r.length)];
+            return {
+                ...card,
+                isNew: !collectedCards[card.id]
+            };
+        }
+        
+        // 添加卡片到收藏
+        function addCardsToCollection(cards) {
+            let newFragments = 0;
+            
+            cards.forEach(card => {
+                if (!collectedCards[card.id]) {
+                    collectedCards[card.id] = {
+                        id: card.id,
+                        name: card.name,
+                        rarity: card.rarity,
+                        image: card.image,
+                        pool: currentPool,
+                        collectedAt: new Date().toISOString()
+                    };
+                } else {
+                    // 重复卡片转化为碎片
+                    if (card.rarity === 'SSR') {
+                        newFragments += 10;
+                    } else if (card.rarity === 'SR') {
+                        newFragments += 2;
+                    } else {
+                        // R卡转化为点数，30点=1碎片
+                        newFragments += 1/30;
+                    }
+                }
+            });
+            
+            // 更新碎片(四舍五入)
+            fragments += Math.round(newFragments);
+            
+            // 保存数据
+            localStorage.setItem('collectedCards', JSON.stringify(collectedCards));
+            localStorage.setItem('userFragments', fragments);
+            
+            // 更新显示
+            updateFragmentsDisplay();
+        }
+        
+        // 显示抽卡结果
+        function showResults(results) {
+            const container = document.getElementById('result-container');
+            container.innerHTML = '';
+            
+            if (results.length === 1) {
+                // 单抽结果
+                const card = results[0];
+                const cardElement = createResultCardElement(card);
+                container.appendChild(cardElement);
+                
+                // 显示新获得提示
+                if (card.isNew) {
+                    const newLabel = document.createElement('div');
+                    newLabel.textContent = '新获得!';
+                    newLabel.style.color = '#FF5722';
+                    newLabel.style.fontWeight = 'bold';
+                    newLabel.style.marginTop = '15px';
+                    newLabel.style.fontSize = '18px';
+                    container.appendChild(newLabel);
+                }
+            } else {
+                // 十连结果
+                const grid = document.createElement('div');
+                grid.style.display = 'grid';
+                grid.style.gridTemplateColumns = 'repeat(auto-fill, minmax(150px, 1fr))';
+                grid.style.gap = '15px';
+                grid.style.margin = '0 auto';
+                
+                results.forEach(card => {
+                    const cardElement = createResultCardElement(card, true);
+                    grid.appendChild(cardElement);
+                });
+                
+                container.appendChild(grid);
+                
+                // 统计结果
+                const ssrCount = results.filter(c => c.rarity === 'SSR').length;
+                const srCount = results.filter(c => c.rarity === 'SR').length;
+                const newCount = results.filter(c => c.isNew).length;
+                
+                const stats = document.createElement('div');
+                stats.style.marginTop = '25px';
+                stats.style.padding = '15px';
+                stats.style.background = 'linear-gradient(135deg, #f8f8f8 0%, #f0f0f0 100%)';
+                stats.style.borderRadius = '12px';
+                stats.style.textAlign = 'center';
+                stats.style.fontSize = '18px';
+                stats.innerHTML = `
+                    <p><strong>抽卡结果统计</strong></p>
+                    <p>SSR: ${ssrCount}张 | SR: ${srCount}张 | 新卡片: ${newCount}张</p>
+                `;
+                container.appendChild(stats);
+            }
+            
+            openResultModal();
+        }
+        
+        // 创建结果卡片元素
+        function createResultCardElement(card, isMulti = false) {
+            const cardElement = document.createElement('div');
+            cardElement.className = `result-card ${card.rarity.toLowerCase()}`;
+            
+            if (isMulti) {
+                cardElement.style.width = '100%';
+                cardElement.style.height = 'auto';
+                cardElement.style.margin = '0';
+            }
+            
+            cardElement.innerHTML = `
+                <img src="${card.image}" alt="${card.name}">
+                <div class="rarity">${card.rarity}</div>
+                <div class="card-name">${card.name}</div>
+                ${card.isNew ? '<div class="new-badge">NEW</div>' : ''}
+            `;
+            
+            return cardElement;
+        }
+        
+        // 打开卡册弹窗
+        function openAlbumModal() {
+            renderAlbumTabs();
+            renderAlbumGrid('all');
+            document.getElementById('album-modal').style.display = 'flex';
+        }
+        
+        // 关闭卡册弹窗
+        function closeAlbumModal() {
+            document.getElementById('album-modal').style.display = 'none';
+        }
+        
+        // 渲染卡册标签
+        function renderAlbumTabs() {
+            const tabs = document.getElementById('album-tabs');
+            tabs.innerHTML = '';
+            
+            // 全部标签
+            const allTab = document.createElement('div');
+            allTab.className = 'album-tab active';
+            allTab.textContent = '全部';
+            allTab.onclick = () => renderAlbumGrid('all');
+            tabs.appendChild(allTab);
+            
+            // 按卡池分类
+            Object.keys(cardPools).forEach(poolId => {
+                const tab = document.createElement('div');
+                tab.className = 'album-tab';
+                tab.textContent = cardPools[poolId].name;
+                tab.onclick = () => renderAlbumGrid(poolId);
+                tabs.appendChild(tab);
+            });
+            
+            // SP卡片标签
+            const spTab = document.createElement('div');
+            spTab.className = 'album-tab';
+            spTab.textContent = 'SP卡片';
+            spTab.onclick = () => renderAlbumGrid('sp');
+            tabs.appendChild(spTab);
+        }
+        
+        // 渲染卡册内容
+        function renderAlbumGrid(filter) {
+            const grid = document.getElementById('album-grid');
+            grid.innerHTML = '';
+            
+            // 更新标签状态
+            document.querySelectorAll('#album-tabs .album-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            let activeTab;
+            if (event) {
+                event.target.classList.add('active');
+                activeTab = event.target;
+            } else {
+                activeTab = document.querySelector('#album-tabs .album-tab.active');
+                if (activeTab) activeTab.classList.add('active');
+            }
+            
+            if (filter === 'all') {
+                // 显示所有卡片
+                Object.keys(cardPools).forEach(poolId => {
+                    const pool = cardPools[poolId];
+                    [...pool.ssr, ...pool.sr, ...pool.r].forEach(card => {
+                        grid.appendChild(createAlbumCardElement(card));
+                    });
+                });
+                
+                // 添加SP卡片
+                spCards.forEach(card => {
+                    grid.appendChild(createAlbumCardElement(card));
+                });
+            } else if (filter === 'sp') {
+                // 显示SP卡片
+                spCards.forEach(card => {
+                    grid.appendChild(createAlbumCardElement(card));
+                });
+            } else {
+                // 显示特定卡池的卡片
+                const pool = cardPools[filter];
+                [...pool.ssr, ...pool.sr, ...pool.r].forEach(card => {
+                    grid.appendChild(createAlbumCardElement(card));
+                });
+            }
+        }
+        
+        // 创建卡册卡片元素
+        function createAlbumCardElement(card) {
+            const cardElement = document.createElement('div');
+            cardElement.className = 'album-card';
+            if (collectedCards[card.id]) {
+                cardElement.classList.add('collected');
+            }
+            
+            cardElement.innerHTML = `
+                <div class="card-image-container">
+                    ${collectedCards[card.id] ? 
+                        `<img src="${card.image}" alt="${card.name}">` : 
+                        '<div class="unknown-card">?</div>'
+                    }
+                </div>
+                <div class="card-name">${collectedCards[card.id] ? card.name : '未获得'}</div>
+                <div class="card-rarity">${card.rarity}</div>
+            `;
+            
+            return cardElement;
+        }
+        
+        // 获取稀有度颜色
+        function getRarityColor(rarity) {
+            switch (rarity) {
+                case 'SSR': return '#FFD700';
+                case 'SR': return '#C0C0C0';
+                case 'R': return '#CD7F32';
+                case 'SP': return '#EE82EE';
+                default: return '#f8f8f8';
+            }
+        }
+        
+        // 打开碎片商店弹窗
+        function openShopModal() {
+            updateFragmentsDisplay(); 
+            renderShopItems();
+            document.getElementById('shop-modal').style.display = 'flex';
+        }
+        
+        // 关闭碎片商店弹窗
+        function closeShopModal() {
+            document.getElementById('shop-modal').style.display = 'none';
+        }
+        
+        // 渲染商店物品
+        function renderShopItems() {
+            const container = document.getElementById('shop-items');
+            container.innerHTML = '';
+            
+            spCards.forEach(card => {
+                const item = document.createElement('div');
+                item.className = 'shop-item';
+                
+                const owned = collectedCards[card.id] ? '<span style="color:#f44336;">(已拥有)</span>' : '';
+                
+                item.innerHTML = `
+                    <div class="shop-item-info">
+                        <div class="shop-item-img">
+                            <img src="${card.image}" alt="${card.name}">
+                        </div>
+                        <div class="shop-item-details">
+                            <div class="shop-item-name">${card.name} ${owned}</div>
+                            <div class="shop-item-desc">${card.description}</div>
+                        </div>
+                    </div>
+                    <div>
+                        <span class="shop-item-price">${card.cost}碎片</span>
+                        <button class="shop-item-btn" ${collectedCards[card.id] || fragments < card.cost ? 'disabled' : ''} 
+                            onclick="buySPCard('${card.id}')">兑换</button>
+                    </div>
+                `;
+                
+                container.appendChild(item);
+            });
+        }
+        
+        // 购买SP卡片
+        function buySPCard(cardId) {
+            const card = spCards.find(c => c.id === cardId);
+            if (!card) return;
+            
+            if (fragments < card.cost) {
+                alert('碎片不足!');
+                return;
+            }
+            
+            if (collectedCards[cardId]) {
+                alert('已经拥有这张卡片!');
+                return;
+            }
+            
+            fragments -= card.cost;
+            collectedCards[cardId] = {
+                id: card.id,
+                name: card.name,
+                image: card.image,
+                rarity: card.rarity,
+                pool: 'sp',
+                collectedAt: new Date().toISOString()
+            };
+            
+            // 保存数据
+            localStorage.setItem('collectedCards', JSON.stringify(collectedCards));
+            localStorage.setItem('userFragments', fragments);
+            
+            // 更新显示
+            updateFragmentsDisplay();
+            renderShopItems();
+            
+            alert(`成功兑换 ${card.name}!`);
+        }
+        
+        // 打开兑换弹窗
+        function openExchangeModal() {
+            document.getElementById('exchange-modal').style.display = 'flex';
+            document.getElementById('modal-exchange-points').value = '';
+            document.getElementById('modal-exchange-result').value = '';
+            document.getElementById('modal-exchange-points').focus();
+        }
+        
+        // 关闭兑换弹窗
+        function closeExchangeModal() {
+            document.getElementById('exchange-modal').style.display = 'none';
+        }
+        
+        // 打开结果弹窗
+        function openResultModal() {
+            document.getElementById('result-modal').style.display = 'flex';
+        }
+        
+        // 关闭结果弹窗
+        function closeResultModal() {
+            document.getElementById('result-modal').style.display = 'none';
+        }
+        
+        // 更新兑换结果预览
+        function updateExchangeResult() {
+            const pointsInput = document.getElementById('modal-exchange-points');
+            const points = parseInt(pointsInput.value) || 0;
+            const resultInput = document.getElementById('modal-exchange-result');
+            resultInput.value = points * exchangeRate;
+        }
+        
+        // 弹窗内兑换积分
+        function modalExchangePoints() {
+            const pointsInput = document.getElementById('modal-exchange-points');
+            const pointsToExchange = parseInt(pointsInput.value);
+    
+            if (isNaN(pointsToExchange) || pointsToExchange <= 0) {
+                alert('请输入有效的积分数量!');
+                return;
+            }
+
+            // 直接从localStorage获取积分数据
+            const points = localStorage.getItem('userPoints') ? parseInt(localStorage.getItem('userPoints')) : 0;
+    
+            if (points < pointsToExchange) {
+                alert('积分不足!');
+                return;
+            }
+
+            // 执行兑换
+            const newPoints = points - pointsToExchange;
+            const newCoins = coins + (pointsToExchange * exchangeRate);
+            
+            // 更新数据
+            localStorage.setItem('userPoints', newPoints);
+            localStorage.setItem('userCoins', newCoins);
+            
+            // 更新显示
+            coins = newCoins;
+            updateCoinsDisplay();
+            
+            // 关闭弹窗
+            closeExchangeModal();
+            
+            // 提示用户
+            alert(`成功兑换 ${pointsToExchange} 积分为 ${pointsToExchange * exchangeRate} 金币!`);
+            pointsInput.value = '';
+            
+            // 可以在这里添加兑换记录
+            const records = localStorage.getItem('exchangeRecords') ? JSON.parse(localStorage.getItem('exchangeRecords')) : [];
+            records.unshift({
+                id: Date.now(),
+                productName: `兑换金币 (${pointsToExchange}积分)`,
+                pointsUsed: pointsToExchange,
+                date: new Date().toLocaleString(),
+                userName: localStorage.getItem('userName') || "用户"
+            });
+            localStorage.setItem('exchangeRecords', JSON.stringify(records));
+        }
+    </script>
+</body>
+</html>
