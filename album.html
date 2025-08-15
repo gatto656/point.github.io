@@ -41,16 +41,11 @@
             --primary-light: #FFECB3;
         }
         
-        body.theme-purple {
-            --primary-color: #9C27B0;
-            --primary-dark: #7B1FA2;
-            --primary-light: #E1BEE7;
-        }
         
         body.theme-dark {
-            --primary-color: #673AB7;
-            --primary-dark: #512DA8;
-            --primary-light: #D1C4E9;
+            --primary-color: #888888;
+            --primary-dark: #555555;
+            --primary-light: #BBBBBB;
             background: linear-gradient(135deg, #121212 0%, #333 100%);
             color: #fff;
         }
@@ -520,16 +515,17 @@
         /* 主题选择弹窗 */
         .theme-options {
             position: fixed;
-            bottom: 120px;
-            left: 30px;
+            bottom: 30px;
+            left: 110px;
             background: white;
             border-radius: 15px;
             padding: 15px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.2);
             z-index: 99;
             display: none;
-            flex-direction: column;
+            flex-direction: row;
             gap: 10px;
+            align-items: center;
         }
         .theme-option {
             width: 50px;
@@ -562,12 +558,9 @@
             background: linear-gradient(135deg, #FFC107 0%, #FFA000 100%);
             color: white;
         }
-        .theme-option.purple {
-            background: linear-gradient(135deg, #9C27B0 0%, #7B1FA2 100%);
-            color: white;
-        }
+        
         .theme-option.dark {
-            background: linear-gradient(135deg, #673AB7 0%, #512DA8 100%);
+            background: linear-gradient(135deg, #888888 0%, #555555 100%);
             color: white;
         }
         .theme-option.sanrio {
@@ -918,6 +911,33 @@
                 grid-template-columns: repeat(3, 1fr);
             }
         }
+        
+        /* 返回主页按钮（现在用作金币按钮） */
+.home-btn {
+    position: fixed;
+    bottom: 120px;  /* 在调色盘按钮上方 */
+    left: 30px;
+    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+    color: white;
+    border: none;
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 28px;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+    z-index: 100;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.home-btn:hover {
+    transform: scale(1.15) rotate(-10deg);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+}
+
     </style>
 </head>
 <body class="theme-green">
@@ -1062,6 +1082,7 @@
         </div>
     </div>
     
+    <button class="home-btn"  onclick="window.location.href='lottery.html'">💰</button>
     <!-- 卡册按钮 -->
     <button class="album-btn" onclick="openAlbumModal()">📔</button>
     <button class="shop-btn" onclick="openShopModal()">🛍️</button>
@@ -1072,7 +1093,6 @@
         <button class="theme-option pink" onclick="changeTheme('pink')"></button>
         <button class="theme-option blue" onclick="changeTheme('blue')"></button>
         <button class="theme-option yellow" onclick="changeTheme('yellow')">☀</button>
-        <button class="theme-option purple" onclick="changeTheme('purple')"></button>
         <button class="theme-option dark" onclick="changeTheme('dark')"></button>
         <button class="theme-option sanrio" onclick="changeTheme('sanrio')">🎀</button>
     </div>
