@@ -10,97 +10,126 @@
             max-width: 1000px;
             margin: 0 auto;
             padding: 20px;
-            background-color: #f5f5f5;
+            background-color: var(--background-color);
             text-align: center;
-            background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
+            color: var(--text-color);
             transition: all 0.3s ease;
         }
         
         /* 主题颜色定义 */
-        body.theme-green {
+        body.theme-default {
             --primary-color: #4CAF50;
-            --primary-dark: #2E7D32;
-            --primary-light: #C8E6C9;
+            --primary-text: white;
+            --secondary-color: #f5f5f5;
+            --background-color: white;
+            --text-color: #333;
+            --border-color: #ddd;
+            --button-hover: #45a049;
+            --header-bg: #4CAF50;
+            --header-text: white;
+            --tab-bg: #ddd;
+            --tab-active: #4CAF50;
+            --product-bg: white;
+            --record-bg: #f9f9f9;
+            --points-display: #4CAF50;
         }
-        
+
         body.theme-pink {
             --primary-color: #E91E63;
-            --primary-dark: #C2185B;
-            --primary-light: #F8BBD0;
+            --primary-text: white;
+            --secondary-color: #FCE4EC;
+            --background-color: white;
+            --text-color: #880E4F;
+            --border-color: #F8BBD0;
+            --button-hover: #C2185B;
+            --header-bg: #C2185B;
+            --header-text: white;
+            --tab-bg: #F8BBD0;
+            --tab-active: #E91E63;
+            --product-bg: white;
+            --record-bg: #FCE4EC;
+            --points-display: #E91E63;
         }
-        
-        body.theme-blue {
-            --primary-color: #2196F3;
-            --primary-dark: #0d47a1;
-            --primary-light: #BBDEFB;
-        }
-        
+
         body.theme-yellow {
             --primary-color: #FFC107;
-            --primary-dark: #FFA000;
-            --primary-light: #FFECB3;
+            --primary-text: black;
+            --secondary-color: #FFF9C4;
+            --background-color: white;
+            --text-color: #5D4037;
+            --border-color: #FFE082;
+            --button-hover: #FFA000;
+            --header-bg: #FFA000;
+            --header-text: white;
+            --tab-bg: #FFE082;
+            --tab-active: #FFC107;
+            --product-bg: white;
+            --record-bg: #FFF9C4;
+            --points-display: #FFA000;
         }
-        
-        
+
+        body.theme-blue {
+            --primary-color: #2196F3;
+            --primary-text: white;
+            --secondary-color: #E3F2FD;
+            --background-color: white;
+            --text-color: #0D47A1;
+            --border-color: #90CAF9;
+            --button-hover: #1976D2;
+            --header-bg: #1976D2;
+            --header-text: white;
+            --tab-bg: #BBDEFB;
+            --tab-active: #2196F3;
+            --product-bg: white;
+            --record-bg: #E3F2FD;
+            --points-display: #1976D2;
+        }
+
         body.theme-dark {
-            --primary-color: #888888;
-            --primary-dark: #555555;
-            --primary-light: #BBBBBB;
-            background: linear-gradient(135deg, #121212 0%, #333 100%);
-            color: #fff;
+            --primary-color: #424242;
+            --primary-text: white;
+            --secondary-color: #212121;
+            --background-color: #303030;
+            --text-color: #E0E0E0;
+            --border-color: #616161;
+            --button-hover: #212121;
+            --header-bg: #212121;
+            --header-text: white;
+            --tab-bg: #616161;
+            --tab-active: #424242;
+            --product-bg: #424242;
+            --record-bg: #212121;
+            --points-display: #212121;
         }
-        
+
         body.theme-sanrio {
             --primary-color: #FF9DB5;
-            --primary-dark: #FF6B8B;
-            --primary-light: #FFD1DC;
-            background: linear-gradient(135deg, #FFF0F5 0%, #FFE4E1 100%);
-        }
-        
-        body.theme-dark .header,
-        body.theme-dark .pool-selection,
-        body.theme-dark .gacha-section,
-        body.theme-dark .modal-content {
-            background-color: #1E1E1E;
-            color: #fff;
-            border-color: #333;
-        }
-        
-        body.theme-dark .album-card {
-            background-color: #2d2d2d;
-            border-color: #444;
-        }
-        
-        body.theme-dark .album-card.collected {
-            background-color: #3d3d3d;
-        }
-        
-        body.theme-dark .album-card .card-name {
-            color: #ddd;
-        }
-        
-        body.theme-dark .pity-counter,
-        body.theme-dark .ssr-selector {
-            background: linear-gradient(135deg, #2d2d2d 0%, #252525 100%);
-        }
-        
-        body.theme-dark .shop-item:hover {
-            background-color: #2d2d2d;
-        }
-        
-        body.theme-dark .shop-item-details .shop-item-name {
-            color: #fff;
+            --primary-text: white;
+            --secondary-color: #FFD1DC;
+            --background-color: #FFF0F5;
+            --text-color: #FF6B8B;
+            --border-color: #FFB6C1;
+            --button-hover: #FF6B8B;
+            --header-bg: #FF6B8B;
+            --header-text: white;
+            --tab-bg: #FFD1DC;
+            --tab-active: #FF9DB5;
+            --product-bg: white;
+            --record-bg: #FFD1DC;
+            --points-display: #FF6B8B;
         }
         
         .header {
             margin-bottom: 20px;
             padding: 15px;
-            background-color: white;
+            background-color: var(--header-bg);
+            color: var(--header-text);
             border-radius: 10px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.08);
         }
+        
         .coins-display {
-            background: linear-gradient(135deg, #FFC107 0%, #FF9800 100%);
+            background: var(--points-display);
             color: white;
             padding: 15px;
             border-radius: 10px;
@@ -116,11 +145,9 @@
             text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
         }
 
-
-        
         .exchange-btn {
-            background: linear-gradient(135deg, #2196F3 0%, #0d47a1 100%);
-            color: white;
+            background: var(--primary-color);
+            color: var(--primary-text);
             border: none;
             padding: 8px 15px;
             border-radius: 30px;
@@ -129,19 +156,23 @@
             transition: all 0.3s;
             box-shadow: 0 2px 5px rgba(0,0,0,0.2);
         }
+        
         .exchange-btn:hover {
+            background: var(--button-hover);
             transform: translateY(-2px);
             box-shadow: 0 4px 8px rgba(0,0,0,0.3);
         }
+        
         /* 卡池选择区域 */
         .pool-selection {
-            background-color: white;
+            background-color: var(--product-bg);
             padding: 25px;
             border-radius: 15px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.08);
             margin-bottom: 25px;
-            border: 1px solid #eaeaea;
+            border: 1px solid var(--border-color);
         }
+        
         .pool-tabs {
             display: flex;
             justify-content: center;
@@ -149,34 +180,39 @@
             flex-wrap: wrap;
             gap: 12px;
         }
+        
         .pool-tab {
             padding: 12px 25px;
             cursor: pointer;
             transition: all 0.3s;
             position: relative;
-            background: linear-gradient(135deg, #f0f0f0 0%, #e0e0e0 100%);
+            background: var(--tab-bg);
             border-radius: 30px;
             font-weight: bold;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
+        
         .pool-tab.active {
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            background: var(--tab-active);
             color: white;
             transform: translateY(-3px);
             box-shadow: 0 5px 10px rgba(0,0,0,0.2);
         }
+        
         .pool-tab:hover:not(.active) {
-            background: linear-gradient(135deg, #e0e0e0 0%, #d0d0d0 100%);
+            background: var(--secondary-color);
         }
+        
         /* SSR选择区域 - 简化版 */
         .ssr-selector {
             margin-top: 25px;
             padding: 20px;
-            background: linear-gradient(135deg, #f8f8f8 0%, #f0f0f0 100%);
+            background: var(--secondary-color);
             border-radius: 12px;
             text-align: center;
             box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
         }
+        
         .ssr-select {
             padding: 12px 20px;
             font-size: 16px;
@@ -185,19 +221,22 @@
             margin-top: 15px;
             width: 85%;
             max-width: 350px;
-            background-color: white;
+            background-color: var(--product-bg);
             font-weight: bold;
             outline: none;
             transition: all 0.3s;
         }
+        
         .ssr-select:focus {
-            border-color: #2196F3;
+            border-color: var(--primary-color);
             box-shadow: 0 0 10px rgba(33,150,243,0.3);
         }
+        
         .selected-ssr-preview {
             margin-top: 20px;
             display: none;
         }
+        
         .selected-ssr-card {
             width: 140px;
             height: 240px;
@@ -212,35 +251,40 @@
             border: 3px solid #FFC107;
             overflow: hidden;
         }
+        
         .selected-ssr-card img {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
+        
         .selected-ssr-name {
             margin-top: 15px;
             font-weight: bold;
             font-size: 18px;
-            color: #333;
+            color: var(--text-color);
         }
+        
         /* 抽卡区域 */
         .gacha-section {
-            background-color: white;
+            background-color: var(--product-bg);
             padding: 25px;
             border-radius: 15px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.08);
             margin-bottom: 25px;
-            border: 1px solid #eaeaea;
+            border: 1px solid var(--border-color);
         }
+        
         .gacha-buttons {
             display: flex;
             justify-content: center;
             gap: 25px;
             margin-top: 25px;
         }
+        
         .gacha-btn {
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
-            color: white;
+            background: var(--primary-color);
+            color: var(--primary-text);
             border: none;
             padding: 15px 35px;
             font-size: 18px;
@@ -252,29 +296,35 @@
             gap: 10px;
             box-shadow: 0 4px 8px rgba(0,0,0,0.2);
         }
+        
         .gacha-btn:hover {
+            background: var(--button-hover);
             transform: translateY(-5px) scale(1.05);
             box-shadow: 0 8px 15px rgba(0,0,0,0.3);
         }
+        
         .gacha-btn:disabled {
             background: linear-gradient(135deg, #cccccc 0%, #999999 100%);
             cursor: not-allowed;
             transform: none;
             box-shadow: none;
         }
+        
         .gacha-cost {
             font-weight: bold;
             font-size: 20px;
         }
+        
         /* 保底计数器 */
         .pity-counter {
             margin-top: 25px;
             padding: 15px;
-            background: linear-gradient(135deg, #f8f8f8 0%, #f0f0f0 100%);
+            background: var(--secondary-color);
             border-radius: 10px;
             font-size: 16px;
             box-shadow: inset 0 0 8px rgba(0,0,0,0.05);
         }
+        
         /* 弹窗样式 */
         .modal {
             display: none;
@@ -289,8 +339,9 @@
             align-items: center;
             backdrop-filter: blur(5px);
         }
+        
         .modal-content {
-            background: white;
+            background: var(--product-bg);
             padding: 30px;
             border-radius: 20px;
             width: 90%;
@@ -299,12 +350,14 @@
             overflow-y: auto;
             box-shadow: 0 10px 30px rgba(0,0,0,0.3);
             animation: modalFadeIn 0.4s cubic-bezier(0.18, 0.89, 0.32, 1.28);
-            border: 1px solid #e0e0e0;
+            border: 1px solid var(--border-color);
         }
+        
         @keyframes modalFadeIn {
             from { opacity: 0; transform: translateY(-40px) scale(0.95); }
             to { opacity: 1; transform: translateY(0) scale(1); }
         }
+        
         .modal-header {
             display: flex;
             justify-content: space-between;
@@ -312,29 +365,33 @@
             margin-bottom: 25px;
             position: sticky;
             top: 0;
-            background-color: white;
+            background-color: var(--product-bg);
             padding-bottom: 20px;
-            border-bottom: 2px solid #f0f0f0;
+            border-bottom: 2px solid var(--border-color);
             z-index: 10;
         }
+        
         .modal-title {
             font-size: 24px;
             font-weight: bold;
             margin: 0;
-            color: #333;
+            color: var(--text-color);
         }
+        
         .close-modal {
             background: none;
             border: none;
             font-size: 28px;
             cursor: pointer;
-            color: #777;
+            color: var(--text-color);
             transition: all 0.3s;
         }
+        
         .close-modal:hover {
             color: #f44336;
             transform: rotate(90deg);
         }
+        
         /* 卡册样式 */
         .album-tabs {
             display: flex;
@@ -343,29 +400,33 @@
             flex-wrap: wrap;
             gap: 12px;
         }
+        
         .album-tab {
             padding: 10px 20px;
             cursor: pointer;
             transition: all 0.3s;
-            background: linear-gradient(135deg, #f0f0f0 0%, #e0e0e0 100%);
+            background: var(--tab-bg);
             border-radius: 30px;
             font-weight: bold;
         }
+        
         .album-tab.active {
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
+            background: var(--tab-active);
             color: white;
             transform: translateY(-3px);
             box-shadow: 0 4px 8px rgba(0,0,0,0.2);
         }
+        
         .album-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
             gap: 18px;
             padding: 10px;
         }
+        
         .album-card {
             aspect-ratio: 7/12;
-            background-color: #f8f8f8;
+            background-color: var(--secondary-color);
             border-radius: 12px;
             display: flex;
             flex-direction: column;
@@ -375,16 +436,19 @@
             overflow: hidden;
             box-shadow: 0 5px 15px rgba(0,0,0,0.1);
             transition: all 0.3s;
-            border: 2px solid #e0e0e0;
+            border: 2px solid var(--border-color);
         }
+        
         .album-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 8px 20px rgba(0,0,0,0.15);
         }
+        
         .album-card.collected {
-            background-color: #fff;
+            background-color: var(--product-bg);
             border-color: #FFC107;
         }
+        
         .album-card.collected::after {
             content: '';
             position: absolute;
@@ -394,11 +458,13 @@
             bottom: 0;
             background: linear-gradient(135deg, rgba(255,215,0,0.2) 0%, rgba(255,255,255,0) 50%);
         }
+        
         .album-card img {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
+        
         .album-card .card-image-container {
             width: 100%;
             height: 100%;
@@ -408,6 +474,7 @@
             overflow: hidden;
             position: relative;
         }
+        
         .album-card .card-name {
             position: absolute;
             bottom: 0;
@@ -420,6 +487,7 @@
             text-align: center;
             z-index: 2;
         }
+        
         .album-card .card-rarity {
             position: absolute;
             top: 8px;
@@ -432,6 +500,7 @@
             font-weight: bold;
             z-index: 2;
         }
+        
         .unknown-card {
             font-size: 36px;
             font-weight: bold;
@@ -441,13 +510,14 @@
             left: 50%;
             transform: translate(-50%, -50%);
         }
+        
         /* 卡册按钮 */
         .album-btn {
             position: fixed;
             bottom: 30px;
             right: 30px;
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
-            color: white;
+            background: var(--primary-color);
+            color: var(--primary-text);
             border: none;
             width: 70px;
             height: 70px;
@@ -461,16 +531,19 @@
             align-items: center;
             justify-content: center;
         }
+        
         .album-btn:hover {
+            background: var(--button-hover);
             transform: scale(1.15) rotate(10deg);
             box-shadow: 0 8px 20px rgba(0,0,0,0.4);
         }
+        
         .shop-btn {
             position: fixed;
             bottom: 120px;
             right: 30px;
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
-            color: white;
+            background: var(--primary-color);
+            color: var(--primary-text);
             border: none;
             width: 70px;
             height: 70px;
@@ -484,17 +557,20 @@
             align-items: center;
             justify-content: center;
         }
+        
         .shop-btn:hover {
+            background: var(--button-hover);
             transform: scale(1.15) rotate(-10deg);
             box-shadow: 0 8px 20px rgba(0,0,0,0.4);
         }
+        
         /* 主题切换按钮 */
         .theme-btn {
             position: fixed;
             bottom: 30px;
             left: 30px;
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
-            color: white;
+            background: var(--primary-color);
+            color: var(--primary-text);
             border: none;
             width: 70px;
             height: 70px;
@@ -508,16 +584,19 @@
             align-items: center;
             justify-content: center;
         }
+        
         .theme-btn:hover {
+            background: var(--button-hover);
             transform: scale(1.15) rotate(10deg);
             box-shadow: 0 8px 20px rgba(0,0,0,0.4);
         }
+        
         /* 主题选择弹窗 */
         .theme-options {
             position: fixed;
             bottom: 30px;
             left: 110px;
-            background: white;
+            background: var(--product-bg);
             border-radius: 15px;
             padding: 15px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.2);
@@ -527,6 +606,7 @@
             gap: 10px;
             align-items: center;
         }
+        
         .theme-option {
             width: 50px;
             height: 50px;
@@ -539,34 +619,41 @@
             align-items: center;
             justify-content: center;
         }
+        
         .theme-option:hover {
             transform: scale(1.1);
         }
-        .theme-option.green {
+        
+        .theme-option.default {
             background: linear-gradient(135deg, #4CAF50 0%, #2E7D32 100%);
             color: white;
         }
+        
         .theme-option.pink {
             background: linear-gradient(135deg, #E91E63 0%, #C2185B 100%);
             color: white;
         }
+        
         .theme-option.blue {
             background: linear-gradient(135deg, #2196F3 0%, #0d47a1 100%);
             color: white;
         }
+        
         .theme-option.yellow {
             background: linear-gradient(135deg, #FFC107 0%, #FFA000 100%);
-            color: white;
+            color: black;
         }
         
         .theme-option.dark {
-            background: linear-gradient(135deg, #888888 0%, #555555 100%);
+            background: linear-gradient(135deg, #424242 0%, #212121 100%);
             color: white;
         }
+        
         .theme-option.sanrio {
             background: linear-gradient(135deg, #FF9DB5 0%, #FF6B8B 100%);
             color: white;
         }
+        
         /* 抽卡结果弹窗 */
         .result-card {
             width: 175px; /* 7的25倍 */
@@ -582,28 +669,34 @@
             box-shadow: 0 8px 20px rgba(0,0,0,0.2);
             transition: all 0.3s;
         }
+        
         .result-card:hover {
             transform: scale(1.05);
             box-shadow: 0 10px 25px rgba(0,0,0,0.3);
         }
+        
         .result-card.ssr {
             border: 4px solid #FFD700;
             background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
         }
+        
         .result-card.sr {
             border: 4px solid #C0C0C0;
             background: linear-gradient(135deg, #C0C0C0 0%, #A0A0A0 100%);
         }
+        
         .result-card.r {
             border: 4px solid #CD7F32;
             background: linear-gradient(135deg, #CD7F32 0%, #A0522D 100%);
         }
+        
         .result-card img {
             width: 90%;
             height: 75%;
             object-fit: cover;
             border-radius: 10px;
         }
+        
         .result-card .rarity {
             position: absolute;
             top: 10px;
@@ -616,6 +709,7 @@
             border-radius: 20px;
             background-color: rgba(0,0,0,0.5);
         }
+        
         .result-card .card-name {
             margin-top: 10px;
             font-weight: bold;
@@ -625,6 +719,7 @@
             background-color: rgba(255,255,255,0.8);
             border-radius: 20px;
         }
+        
         .new-badge {
             position: absolute;
             top: 10px;
@@ -638,74 +733,86 @@
             z-index: 2;
             animation: pulse 1.5s infinite;
         }
+        
         @keyframes pulse {
             0% { transform: scale(1); }
             50% { transform: scale(1.1); }
             100% { transform: scale(1); }
         }
+        
         /* 商店弹窗 */
         .shop-item {
             display: flex;
             align-items: center;
             justify-content: space-between;
             padding: 15px;
-            border-bottom: 1px solid #eee;
+            border-bottom: 1px solid var(--border-color);
             transition: all 0.3s;
             border-radius: 10px;
         }
+        
         .shop-item:hover {
-            background-color: #f9f9f9;
+            background-color: var(--secondary-color);
             transform: translateY(-3px);
             box-shadow: 0 5px 15px rgba(0,0,0,0.05);
         }
+        
         .shop-item:last-child {
             border-bottom: none;
         }
+        
         .shop-item-info {
             display: flex;
             align-items: center;
             gap: 15px;
         }
+        
         .shop-item-img {
             width: 70px;
             height: 100px;
-            background-color: #f8f8f8;
+            background-color: var(--secondary-color);
             border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
             overflow: hidden;
             box-shadow: 0 3px 8px rgba(0,0,0,0.1);
-            border: 2px solid #e0e0e0;
+            border: 2px solid var(--border-color);
         }
+        
         .shop-item-img img {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
+        
         .shop-item-details {
             flex-grow: 1;
             text-align: left;
         }
+        
         .shop-item-name {
             font-weight: bold;
             font-size: 18px;
-            color: #333;
+            color: var(--text-color);
         }
+        
         .shop-item-desc {
             font-size: 14px;
-            color: #666;
+            color: var(--text-color);
             margin-top: 5px;
         }
+        
         .shop-item-price {
             font-weight: bold;
             color: #FF5722;
             font-size: 18px;
             margin-right: 15px;
         }
+        
         .shop-item-btn {
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
-            color: white;
+            background: var(--primary-color);
+            color: var(--primary-text);
             border: none;
             padding: 8px 18px;
             border-radius: 30px;
@@ -714,16 +821,20 @@
             transition: all 0.3s;
             box-shadow: 0 3px 8px rgba(0,0,0,0.2);
         }
+        
         .shop-item-btn:hover:not(:disabled) {
+            background: var(--button-hover);
             transform: translateY(-3px);
             box-shadow: 0 5px 12px rgba(0,0,0,0.3);
         }
+        
         .shop-item-btn:disabled {
             background: linear-gradient(135deg, #cccccc 0%, #999999 100%);
             cursor: not-allowed;
             transform: none;
             box-shadow: none;
         }
+        
         /* 积分兑换表单 */
         .exchange-form {
             display: flex;
@@ -732,37 +843,45 @@
             max-width: 400px;
             margin: 0 auto;
         }
+        
         .exchange-form-group {
             display: flex;
             flex-direction: column;
             text-align: left;
         }
+        
         .exchange-form-group label {
             margin-bottom: 8px;
             font-weight: bold;
             font-size: 16px;
-            color: #333;
+            color: var(--text-color);
         }
+        
         .exchange-form-group input {
             padding: 12px;
-            border: 2px solid #ddd;
+            border: 2px solid var(--border-color);
             border-radius: 8px;
             font-size: 16px;
             transition: all 0.3s;
+            background-color: var(--product-bg);
+            color: var(--text-color);
         }
+        
         .exchange-form-group input:focus {
-            border-color: #2196F3;
+            border-color: var(--primary-color);
             box-shadow: 0 0 10px rgba(33,150,243,0.3);
             outline: none;
         }
+        
         .info-text {
             font-size: 14px;
-            color: #666;
+            color: var(--text-color);
             margin-top: 8px;
         }
+        
         .exchange-submit {
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
-            color: white;
+            background: var(--primary-color);
+            color: var(--primary-text);
             border: none;
             padding: 14px;
             border-radius: 8px;
@@ -773,7 +892,9 @@
             font-weight: bold;
             box-shadow: 0 4px 10px rgba(0,0,0,0.2);
         }
+        
         .exchange-submit:hover {
+            background: var(--button-hover);
             transform: translateY(-3px);
             box-shadow: 0 6px 15px rgba(0,0,0,0.3);
         }
@@ -789,29 +910,29 @@
         .flip-game-level {
             font-size: 18px;
             font-weight: bold;
-            color: var(--primary-dark);
+            color: var(--primary-color);
         }
         
         .flip-game-grid {
             display: grid;
             grid-template-columns: repeat(4, 1fr);
-             repeat: 8px;
+            gap: 8px;
             width: 100%;
             max-width: 500px;
         }
         
         .flip-card {
             aspect-ratio: 1/1;
-            width: 80px; /* 固定宽度 */
-            height: 80px; /* 固定高度 */
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
-            border-radius: 8px; /* 稍微圆角 */
+            width: 80px;
+            height: 80px;
+            background: var(--primary-color);
+            color: var(--primary-text);
+            border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
             font-size: 24px;
-            color: white;
             transition: all 0.3s;
             position: relative;
             overflow: hidden;
@@ -820,11 +941,12 @@
         }
         
         .flip-card:hover {
+            background: var(--button-hover);
             transform: scale(1.05);
         }
         
         .flip-card.revealed {
-            background: white;
+            background: var(--product-bg);
             cursor: default;
             padding: 5px; 
         }
@@ -849,6 +971,7 @@
             font-size: 12px;
             font-weight: bold;
             margin-top: 3px;
+            color: var(--text-color);
         }
         
         .flip-game-info {
@@ -857,13 +980,13 @@
             width: 100%;
             max-width: 500px;
             padding: 10px;
-            background: #f8f8f8;
+            background: var(--secondary-color);
             border-radius: 10px;
         }
         
         .flip-game-btn {
-            background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
-            color: white;
+            background: var(--primary-color);
+            color: var(--primary-text);
             border: none;
             padding: 10px 20px;
             border-radius: 30px;
@@ -874,6 +997,7 @@
         }
         
         .flip-game-btn:hover {
+            background: var(--button-hover);
             transform: translateY(-3px);
             box-shadow: 0 5px 12px rgba(0,0,0,0.3);
         }
@@ -891,59 +1015,86 @@
                 flex-direction: column;
                 gap: 15px;
             }
+            
             .pool-tabs {
                 flex-direction: column;
                 align-items: center;
             }
+            
             .album-grid {
                 grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
             }
+            
             .shop-btn {
                 bottom: 110px;
             }
+            
             .theme-btn {
                 bottom: 30px;
             }
+            
             .theme-options {
                 bottom: 110px;
             }
+            
             .flip-game-grid {
                 grid-template-columns: repeat(3, 1fr);
             }
         }
         
         /* 返回主页按钮（现在用作金币按钮） */
-.home-btn {
-    position: fixed;
-    bottom: 120px;  /* 在调色盘按钮上方 */
-    left: 30px;
-    background: linear-gradient(135deg, var(--primary-color) 0%, var(--primary-dark) 100%);
-    color: white;
-    border: none;
-    width: 70px;
-    height: 70px;
-    border-radius: 50%;
-    cursor: pointer;
-    font-size: 28px;
-    box-shadow: 0 6px 15px rgba(0,0,0,0.3);
-    z-index: 100;
-    transition: all 0.3s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.home-btn:hover {
-    transform: scale(1.15) rotate(-10deg);
-    box-shadow: 0 8px 20px rgba(0,0,0,0.4);
-}
-
+        .home-btn {
+            position: fixed;
+            bottom: 120px;
+            left: 30px;
+            background: var(--primary-color);
+            color: var(--primary-text);
+            border: none;
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 28px;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+            z-index: 100;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .home-btn:hover {
+            background: var(--button-hover);
+            transform: scale(1.15) rotate(-10deg);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+        }
+        
+        /* 三丽鸥解锁提示 */
+        .sanrio-lock {
+            position: relative;
+            opacity: 0.5;
+        }
+        
+        .sanrio-lock::after {
+            content: "88碎片解锁";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: rgba(0,0,0,0.7);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            z-index: 2;
+        }
     </style>
 </head>
-<body class="theme-green">
+<body class="theme-default">
     <div class="header">
         <h1>🎴 卡片收集</h1>
-        <p>收集稀有卡片，完成你的专属收藏！</p>
+        <p>收集稀有卡片，完成你的专属收藏！(完成一个主题最高可得30以下的玩具一个哦）</p>
     </div>
     
     <div class="coins-display">
@@ -958,7 +1109,7 @@
             <div class="pool-tab active" onclick="switchPool('zodiac')">四大神兽</div>
             <div class="pool-tab" onclick="switchPool('constellation')">十二星座</div>
             <div class="pool-tab" onclick="switchPool('seasons')">四季限定</div>
-            <div class="pool-tab" onclick="switchPool('sanrio')">三丽鸥</div>
+            <div class="pool-tab" id="sanrio-tab" onclick="trySwitchToSanrio()">三丽鸥</div>
         </div>
         
         <!-- 简化的SSR选择区域 -->
@@ -1082,19 +1233,19 @@
         </div>
     </div>
     
-    <button class="home-btn"  onclick="window.location.href='lottery.html'">💰</button>
+    <button class="home-btn" onclick="window.location.href='lottery.html'">💰</button>
     <!-- 卡册按钮 -->
     <button class="album-btn" onclick="openAlbumModal()">📔</button>
     <button class="shop-btn" onclick="openShopModal()">🛍️</button>
     <!-- 主题切换按钮 -->
     <button class="theme-btn" onclick="toggleThemeOptions()">🎨</button>
     <div class="theme-options" id="theme-options">
-        <button class="theme-option green" onclick="changeTheme('green')"></button>
+        <button class="theme-option default" onclick="changeTheme('default')"></button>
         <button class="theme-option pink" onclick="changeTheme('pink')"></button>
         <button class="theme-option blue" onclick="changeTheme('blue')"></button>
         <button class="theme-option yellow" onclick="changeTheme('yellow')">☀</button>
         <button class="theme-option dark" onclick="changeTheme('dark')"></button>
-        <button class="theme-option sanrio" onclick="changeTheme('sanrio')">🎀</button>
+        <button class="theme-option sanrio" onclick="tryChangeToSanrioTheme()">🎀</button>
     </div>
     
     <script>
@@ -1108,6 +1259,7 @@
         };
         let selectedSSR = localStorage.getItem('selectedSSR') || null;
         let currentPool = localStorage.getItem('currentPool') || 'zodiac';
+        let isSanrioUnlocked = localStorage.getItem('isSanrioUnlocked') === 'true';
         const exchangeRate = 10; // 1积分 = 10金币
         
         // 翻牌游戏状态
@@ -1145,18 +1297,20 @@
              ],
             sr: [
           // 十二生肖
-                { id: "zodiac-sr-1", name: "子鼠", rarity: "SR", image: "images/cards/animal/sr-rat.jpg" },
-                { id: "zodiac-sr-2", name: "丑牛", rarity: "SR", image: "images/cards/animal/sr-ox.jpg" },
-                { id: "zodiac-sr-3", name: "寅虎", rarity: "SR", image: "images/cards/animal/sr-tiger.jpg" },
-                { id: "zodiac-sr-4", name: "卯兔", rarity: "SR", image: "images/cards/animal/sr-rabbit.jpg" },
-                { id: "zodiac-sr-5", name: "辰龙", rarity: "SR", image: "images/cards/animal/sr-dragon.jpg" },
-                { id: "zodiac-sr-6", name: "巳蛇", rarity: "SR", image: "images/cards/animal/sr-snake.jpg" },
-                { id: "zodiac-sr-7", name: "午马", rarity: "SR", image: "images/cards/animal/sr-horse.jpg" },
-                { id: "zodiac-sr-8", name: "未羊", rarity: "SR", image: "images/cards/animal/sr-goat.jpg" },
-                { id: "zodiac-sr-9", name: "申猴", rarity: "SR", image: "images/cards/animal/sr-monkey.jpg" },
-                { id: "zodiac-sr-10", name: "酉鸡", rarity: "SR", image: "images/cards/animal/sr-rooster.jpg" },
-                { id: "zodiac-sr-11", name: "戌狗", rarity: "SR", image: "images/cards/animal/sr-dog.jpg" },
-                { id: "zodiac-sr-12", name: "亥猪", rarity: "SR", image: "images/cards/animal/sr-pig.jpg" }
+                { id: "zodiac-sr-1", name: "子鼠", rarity: "SR", image: "images/cards/animal/sr-animal1.jpg" },
+                { id: "zodiac-sr-2", name: "丑牛", rarity: "SR", image: "images/cards/animal/sr-animal2.jpg" },
+                { id: "zodiac-sr-3", name: "寅虎", rarity: "SR", image: "images/cards/animal/sr-animal3.jpg" },
+                { id: "zodiac-sr-4", name: "卯兔", rarity: "SR", image: "images/cards/animal/sr-animal4.jpg" },
+                { id: "zodiac-sr-5", name: "辰龙", rarity: "SR", image: "images/cards/animal/sr-animal5.jpg" },
+                { id: "zodiac-sr-6", name: "巳蛇", rarity: "SR", image: "images/cards/animal/sr-animal6.jpg" },
+                { id: "zodiac-sr-7", name: "午马", rarity: "SR", image: "images/cards/animal/sr-animal7.jpg" },
+                { id: "zodiac-sr-8", name: "未羊", rarity: "SR", image: "images/cards/animal/sr-animal8.jpg" },
+                { id: "zodiac-sr-9", name: "申猴", rarity: "SR", image: "images/cards/animal/sr-animal9.jpg" },
+                { id: "zodiac-sr-10", name: "酉鸡", rarity: "SR", image: "images/cards/animal/sr-animal10.jpg" },
+                { id: "zodiac-sr-11", name: "戌狗", rarity: "SR", image: "images/cards/animal/sr-animal11.jpg" },
+                { id: "zodiac-sr-12", name: "亥猪", rarity: "SR", image: "images/cards/animal/sr-animal12.jpg" },
+                { id: "zodiac-sr-11", name: "猫", rarity: "SR", image: "images/cards/animal/sr-animal13.jpg" }
+                
                 ],
             r: Array.from({length: 48}, (_, i) => {
           // 常见动物名称数组（示例）
@@ -1378,7 +1532,7 @@
         // 页面加载时初始化
         document.addEventListener('DOMContentLoaded', function() {
             // 应用保存的主题
-            const savedTheme = localStorage.getItem('selectedTheme') || 'green';
+            const savedTheme = localStorage.getItem('selectedTheme') || 'default';
             document.body.className = `theme-${savedTheme}`;
             
             updateCoinsDisplay();
@@ -1403,13 +1557,79 @@
             
             // 检查是否显示翻牌游戏按钮
             updateFlipGameButton();
+            
+            // 更新三丽鸥标签状态
+            updateSanrioTab();
         });
         
         // 切换主题
         function changeTheme(theme) {
+            if (theme === 'sanrio' && !isSanrioUnlocked) {
+                tryChangeToSanrioTheme();
+                return;
+            }
+            
             document.body.className = `theme-${theme}`;
             localStorage.setItem('selectedTheme', theme);
             closeThemeOptions();
+        }
+        
+        // 尝试切换到三丽鸥主题
+        function tryChangeToSanrioTheme() {
+            if (isSanrioUnlocked) {
+                changeTheme('sanrio');
+                return;
+            }
+            
+            if (confirm('解锁三丽鸥主题需要88碎片，是否确认解锁？')) {
+                if (fragments >= 88) {
+                    fragments -= 88;
+                    isSanrioUnlocked = true;
+                    localStorage.setItem('userFragments', fragments);
+                    localStorage.setItem('isSanrioUnlocked', 'true');
+                    updateFragmentsDisplay();
+                    changeTheme('sanrio');
+                    updateSanrioTab();
+                    alert('三丽鸥主题已解锁！');
+                } else {
+                    alert('碎片不足！需要88碎片解锁三丽鸥主题。');
+                }
+            }
+        }
+        
+        // 尝试切换到三丽鸥卡池
+        function trySwitchToSanrio() {
+            if (isSanrioUnlocked) {
+                switchPool('sanrio');
+                return;
+            }
+            
+            if (confirm('解锁三丽鸥卡池需要88碎片，是否确认解锁？')) {
+                if (fragments >= 88) {
+                    fragments -= 88;
+                    isSanrioUnlocked = true;
+                    localStorage.setItem('userFragments', fragments);
+                    localStorage.setItem('isSanrioUnlocked', 'true');
+                    updateFragmentsDisplay();
+                    switchPool('sanrio');
+                    updateSanrioTab();
+                    alert('三丽鸥卡池已解锁！');
+                } else {
+                    alert('碎片不足！需要88碎片解锁三丽鸥卡池。');
+                }
+            }
+        }
+        
+        // 更新三丽鸥标签状态
+        function updateSanrioTab() {
+            const sanrioTab = document.getElementById('sanrio-tab');
+            if (!sanrioTab) return;
+            
+            if (!isSanrioUnlocked) {
+                sanrioTab.classList.add('sanrio-lock');
+            } else {
+                sanrioTab.classList.remove('sanrio-lock');
+            }
         }
         
         // 显示/隐藏主题选项
@@ -1946,6 +2166,55 @@
                 
                 container.appendChild(item);
             });
+            
+            // 添加三丽鸥解锁选项（如果未解锁）
+            if (!isSanrioUnlocked) {
+                const unlockItem = document.createElement('div');
+                unlockItem.className = 'shop-item';
+                
+                unlockItem.innerHTML = `
+                    <div class="shop-item-info">
+                        <div class="shop-item-img" style="background-color: #FF9DB5;">
+                            🎀
+                        </div>
+                        <div class="shop-item-details">
+                            <div class="shop-item-name">解锁三丽鸥主题和卡池</div>
+                            <div class="shop-item-desc">解锁三丽鸥主题和卡池，包含27张SSR卡片</div>
+                        </div>
+                    </div>
+                    <div>
+                        <span class="shop-item-price">88碎片</span>
+                        <button class="shop-item-btn" ${fragments < 88 ? 'disabled' : ''} 
+                            onclick="unlockSanrio()">解锁</button>
+                    </div>
+                `;
+                
+                container.insertBefore(unlockItem, container.firstChild);
+            }
+        }
+        
+        // 解锁三丽鸥主题和卡池
+        function unlockSanrio() {
+            if (isSanrioUnlocked) {
+                alert('三丽鸥主题和卡池已经解锁！');
+                return;
+            }
+            
+            if (fragments < 88) {
+                alert('碎片不足！需要88碎片解锁三丽鸥主题和卡池。');
+                return;
+            }
+            
+            if (confirm('确认花费88碎片解锁三丽鸥主题和卡池吗？')) {
+                fragments -= 88;
+                isSanrioUnlocked = true;
+                localStorage.setItem('userFragments', fragments);
+                localStorage.setItem('isSanrioUnlocked', 'true');
+                updateFragmentsDisplay();
+                renderShopItems();
+                updateSanrioTab();
+                alert('三丽鸥主题和卡池已解锁！');
+            }
         }
         
         // 购买SP卡片
@@ -2159,59 +2428,6 @@
             `;
             container.appendChild(gameInfo);
             
-              
-              // 将 flipCard 函数移到全局作用域
-                 // 渲染翻牌游戏界面
-        function renderFlipGame() {
-            const container = document.getElementById('flip-game-container');
-            container.innerHTML = '';
-            
-            // 添加关卡信息
-            const levelInfo = document.createElement('div');
-            levelInfo.className = 'flip-game-level';
-            levelInfo.textContent = `第 ${flipGameState.currentLevel + 1} 层 (共 7 层)`;
-            container.appendChild(levelInfo);
-            
-            // 添加游戏网格
-            const grid = document.createElement('div');
-            grid.className = 'flip-game-grid';
-            
-            // 创建12张卡片 (3x4)
-            for (let i = 0; i < 12; i++) {
-                const card = document.createElement('div');
-                card.className = 'flip-card';
-                
-                // 检查这张牌是否已经被翻开
-                if (flipGameState.revealedCards.includes(i)) {
-                    card.classList.add('revealed');
-                    
-                    // 获取这张牌的内容
-                    const cardContent = getFlipCardContent(i);
-                    card.innerHTML = `
-                        <div class="flip-card-content">
-                            ${cardContent.image ? `<img src="${cardContent.image}" alt="${cardContent.name}">` : cardContent.name}
-                            <div class="flip-card-name">${cardContent.name}</div>
-                        </div>
-                    `;
-                } else {
-                    card.textContent = '?';
-                    card.onclick = () => flipCard(i);
-                }
-                
-                grid.appendChild(card);
-            }
-            
-            container.appendChild(grid);
-            
-            // 添加游戏信息
-            const gameInfo = document.createElement('div');
-            gameInfo.className = 'flip-game-info';
-            gameInfo.innerHTML = `
-                <span>已获得碎片: ${flipGameState.fragmentsEarned}</span>
-                <span>金币: ${coins}</span>
-            `;
-            container.appendChild(gameInfo);
-            
             // 添加翻牌按钮
             const flipBtn = document.createElement('button');
             flipBtn.className = 'flip-game-btn';
@@ -2272,70 +2488,64 @@
                 fragments: randomFragments
             };
         }
+        
         // 翻开一张牌
-            function flipCard(cardIndex) {
-                if (coins < 50) {
-                    alert('金币不足!');
-                    return;
-                }
+        function flipCard(cardIndex) {
+            if (coins < 50) {
+                alert('金币不足!');
+                return;
+            }
     
-                // 扣除金币
-                coins -= 50;
-                updateCoinsDisplay();
+            // 扣除金币
+            coins -= 50;
+            updateCoinsDisplay();
     
-                // 标记这张牌为已翻开
-                flipGameState.revealedCards.push(cardIndex);
+            // 标记这张牌为已翻开
+            flipGameState.revealedCards.push(cardIndex);
     
-                // 获取卡片内容
-                const cardContent = getFlipCardContent(cardIndex);
+            // 获取卡片内容
+            const cardContent = getFlipCardContent(cardIndex);
     
-                // 处理奖励
-                if (cardContent.fragments) {
-                    // 增加游戏内获得的碎片总数
-                    flipGameState.fragmentsEarned += cardContent.fragments;
-        
-                    // 增加玩家的总碎片数
-                    fragments += cardContent.fragments;
-        
-                    // 保存碎片到本地存储
-                    localStorage.setItem('userFragments', fragments.toString());
-        
-                    // 更新碎片显示
-                    updateFragmentsDisplay();
-                }
-                 // 修改后的钥匙获取逻辑
-                if (flipGameState.currentLevel < 6 && cardIndex === 11) {
-                    flipGameState.currentLevel++;
-                    flipGameState.revealedCards = []; // 关键修复：清空翻牌状态
-                    alert(`获得第${flipGameState.currentLevel + 1}层钥匙！新层级的牌已重置！`);
-                    saveFlipGameState();
-                    renderFlipGame();
-                    return; // 退出函数
-                }
-
-                // 最终层奖励（必须实际翻到第12张牌）
-                if (flipGameState.currentLevel === 6 && cardIndex === 11) {
-                    const card = cardPools.sanrio.ssr.find(c => c.id === flipGameState.targetCard);
-                    addCardsToCollection([{...card, isNew: !collectedCards[card.id]}]);
-                    alert(`恭喜！你亲手翻出了目标卡片【${card.name}】！`);
-                    flipGameState = null;
-                    localStorage.removeItem('flipGameState');
-                }
-
+            // 处理奖励
+            if (cardContent.fragments) {
+                // 增加游戏内获得的碎片总数
+                flipGameState.fragmentsEarned += cardContent.fragments;
     
-
+                // 增加玩家的总碎片数
+                fragments += cardContent.fragments;
     
-                // 保存游戏状态
+                // 保存碎片到本地存储
+                localStorage.setItem('userFragments', fragments.toString());
+    
+                // 更新碎片显示
+                updateFragmentsDisplay();
+            }
+            
+            // 修改后的钥匙获取逻辑
+            if (flipGameState.currentLevel < 6 && cardIndex === 11) {
+                flipGameState.currentLevel++;
+                flipGameState.revealedCards = []; // 关键修复：清空翻牌状态
+                alert(`获得第${flipGameState.currentLevel + 1}层钥匙！新层级的牌已重置！`);
                 saveFlipGameState();
-    
-                // 重新渲染游戏界面
                 renderFlipGame();
+                return; // 退出函数
             }
 
-
-      }
-
-
+            // 最终层奖励（必须实际翻到第12张牌）
+            if (flipGameState.currentLevel === 6 && cardIndex === 11) {
+                const card = cardPools.sanrio.ssr.find(c => c.id === flipGameState.targetCard);
+                addCardsToCollection([{...card, isNew: !collectedCards[card.id]}]);
+                alert(`恭喜！你亲手翻出了目标卡片【${card.name}】！`);
+                flipGameState = null;
+                localStorage.removeItem('flipGameState');
+            }
+    
+            // 保存游戏状态
+            saveFlipGameState();
+    
+            // 重新渲染游戏界面
+            renderFlipGame();
+        }
     </script>
 </body>
 </html>
