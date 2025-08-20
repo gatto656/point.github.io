@@ -419,9 +419,12 @@
             align-items: center;
             transition: all 0.3s;
         }
-
-        /* 主题切换按钮样式 - 与抽奖页面一致 */
-        .theme-toggle-btn {
+        
+              /* 主题切换按钮样式 - 更新为与抽奖页面一致 */
+        .theme-btn {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
             background-color: var(--primary-color);
             color: var(--primary-text);
             border: none;
@@ -430,38 +433,34 @@
             border-radius: 50%;
             font-size: 28px;
             cursor: pointer;
-            box-shadow: 0 6px 15px rgba(0,0,0,0.3);
-            position: fixed;
-            bottom: 30px;
-            left: 30px;
-            z-index: 1000;
-            display: flex;
-            justify-content: center;             
-            align-items: center;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            z-index: 50;
             transition: all 0.3s;
         }
-        
-        .theme-toggle-btn:hover {
+
+        .theme-btn:hover {
             transform: scale(1.1);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.4);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.3);
         }
-        
-        .theme-panel {
-            display: none;
+
+        /* 主题选项 */
+        .theme-options {
             position: fixed;
-            bottom: 120px;
-            left: 30px;
-            background-color: var(--product-bg);
-            padding: 15px;
+            bottom: 110px;
+            left: 20px;
+            background: var(--background-color);
             border-radius: 15px;
+            padding: 15px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-            z-index: 1000;
+            z-index: 49;
+            display: none;
             flex-direction: row;
             gap: 10px;
             align-items: center;
             border: 1px solid var(--border-color);
         }
-        
+
+
         .theme-option {
             width: 40px;
             height: 40px;
@@ -512,15 +511,18 @@
 </head>
 <body class="theme-default">
     <!-- 主题切换按钮 - 与抽奖页面一致 -->
-    <button class="theme-toggle-btn" onclick="toggleThemePanel()">🎨</button>
-    
-    <div class="theme-panel" id="theme-panel">
-        <button class="theme-option default" onclick="changeTheme('default')" title="绿色主题">🌿</button>
-        <button class="theme-option pink" onclick="changeTheme('pink')" title="粉色主题">🌸</button>
-        <button class="theme-option yellow" onclick="changeTheme('yellow')" title="黄色主题">☀️</button>
-        <button class="theme-option blue" onclick="changeTheme('blue')" title="蓝色主题">🌊</button>
-        <button class="theme-option dark" onclick="changeTheme('dark')" title="深色主题">🌑</button>
-    </div>
+<!-- 主题切换按钮 - 与抽奖页面一致 -->
+<button class="theme-btn" onclick="toggleThemeOptions()">🎨</button>
+
+<!-- 主题选项 -->
+<div class="theme-options" id="theme-options">
+    <button class="theme-option default" onclick="changeTheme('default')" title="绿色主题">🌿</button>
+    <button class="theme-option pink" onclick="changeTheme('pink')" title="粉色主题">🌸</button>
+    <button class="theme-option yellow" onclick="changeTheme('yellow')" title="黄色主题">☀️</button>
+    <button class="theme-option blue" onclick="changeTheme('blue')" title="蓝色主题">🌊</button>
+    <button class="theme-option dark" onclick="changeTheme('dark')" title="深色主题">🌑</button>
+    <button class="theme-option sanrio" onclick="changeTheme('sanrio')" title="三丽鸥主题">🎀</button>
+</div>
     
     <div class="header">
         <h1>积分商城</h1>
@@ -698,69 +700,81 @@
         // 当前主题 - 与抽奖页面同步
         let currentTheme = localStorage.getItem('selectedTheme') || 'default';
         
-        // 页面加载时初始化
-        document.addEventListener('DOMContentLoaded', function() {
-            updatePointsDisplay();
-            renderProductList();
-            renderRecordList();
-            renderInventoryList();
-            renderCouponList();
-            document.getElementById('display-name').textContent = userName;
-            updateCheckInStatus();
-            renderCheckInCalendar();
-            
-            // 检查今天是否已经签到
-            const today = new Date().toDateString();
-            if (checkInData.lastCheckInDate === today) {
-                document.getElementById('check-in-btn').disabled = true;
-                document.getElementById('today-status').textContent = "已签到";
-            }
-            
-            // 显示首次兑换优惠提示
-            if (firstExchange) {
-                document.getElementById('first-time-discount').style.display = 'block';
-            }
-            
-            // 显示当前使用的优惠券
-            if (activeCoupon) {
-                document.getElementById('active-coupon-info').style.display = 'block';
-                document.getElementById('active-coupon-name').textContent = activeCoupon.name;
-                document.getElementById('active-coupon-discount').textContent = activeCoupon.discount;
-            }
-            
-            // 随机发放优惠券给新用户
-            if (coupons.length === 0 && Math.random() > 0.5) {
-                const randomCoupon = couponTemplates[Math.floor(Math.random() * couponTemplates.length)];
-                coupons.push({
-                    ...randomCoupon,
-                    id: Date.now(),
-                    used: false
-                });
-                localStorage.setItem('userCoupons', JSON.stringify(coupons));
-                renderCouponList();
-                alert(`恭喜获得优惠券: ${randomCoupon.name} (代码: ${randomCoupon.code})`);
-            }
-            
-            // 应用保存的主题 - 与抽奖页面同步
-            applyTheme(currentTheme);
+// 页面加载时初始化
+document.addEventListener('DOMContentLoaded', function() {
+    updatePointsDisplay();
+    renderProductList();
+    renderRecordList();
+    renderInventoryList();
+    renderCouponList();
+    document.getElementById('display-name').textContent = userName;
+    updateCheckInStatus();
+    renderCheckInCalendar();
+    
+    // 检查今天是否已经签到
+    const today = new Date().toDateString();
+    if (checkInData.lastCheckInDate === today) {
+        document.getElementById('check-in-btn').disabled = true;
+        document.getElementById('today-status').textContent = "已签到";
+    }
+    
+    // 显示首次兑换优惠提示
+    if (firstExchange) {
+        document.getElementById('first-time-discount').style.display = 'block';
+    }
+    
+    // 显示当前使用的优惠券
+    if (activeCoupon) {
+        document.getElementById('active-coupon-info').style.display = 'block';
+        document.getElementById('active-coupon-name').textContent = activeCoupon.name;
+        document.getElementById('active-coupon-discount').textContent = activeCoupon.discount;
+    }
+    
+    // 随机发放优惠券给新用户
+    if (coupons.length === 0 && Math.random() > 0.5) {
+        const randomCoupon = couponTemplates[Math.floor(Math.random() * couponTemplates.length)];
+        coupons.push({
+            ...randomCoupon,
+            id: Date.now(),
+            used: false
         });
+        localStorage.setItem('userCoupons', JSON.stringify(coupons));
+        renderCouponList();
+        alert(`恭喜获得优惠券: ${randomCoupon.name} (代码: ${randomCoupon.code})`);
+    }
+    
+    // 应用保存的主题 - 与抽奖页面同步
+    applyTheme(currentTheme);
+});
         
-        // 主题切换功能 - 与抽奖页面一致
-        function toggleThemePanel() {
-            const panel = document.getElementById('theme-panel');
-            panel.style.display = panel.style.display === 'flex' ? 'none' : 'flex';
-        }
-        
-        function changeTheme(theme) {
-            currentTheme = theme;
-            localStorage.setItem('selectedTheme', theme);
-            applyTheme(theme);
-            toggleThemePanel();
-        }
-        
-        function applyTheme(theme) {
-            document.body.className = `theme-${theme}`;
-        }
+// 主题切换功能
+function toggleThemeOptions() {
+    const options = document.getElementById('theme-options');
+    if (options.style.display === 'flex') {
+        options.style.display = 'none';
+    } else {
+        options.style.display = 'flex';
+    }
+}
+
+function changeTheme(theme) {
+    document.body.className = `theme-${theme}`;
+    localStorage.setItem('selectedTheme', theme);
+    closeThemeOptions();
+}
+
+function closeThemeOptions() {
+    document.getElementById('theme-options').style.display = 'none';
+}
+
+// 页面加载时应用保存的主题
+document.addEventListener('DOMContentLoaded', function() {
+    // 应用保存的主题
+    const savedTheme = localStorage.getItem('selectedTheme') || 'default';
+    document.body.className = `theme-${savedTheme}`;
+    
+    // 其他初始化代码...
+});
         
         // 兑换优惠券
         function redeemCoupon() {
